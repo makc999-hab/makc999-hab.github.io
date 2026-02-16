@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Максим Перепелица — Developer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="hero">
+    <div class="lang-switch">
+        <button onclick="setLang('ru')">RU</button>
+        <button onclick="setLang('en')">EN</button>  
+    </div>
+
+    <h1 id="name">Maxim Perepelitsa</h1>
+    <p id="title">Junior Developer • Python / C++ / Web</p>
+    <button onclick="scrollToSection('projects')" id="cta">
+        View projects
+    </button>
+</header>
+
+<section class="about">
+    <h2>Обо мне</h2>
+    <p>
+        23 года. Образование — техник-программист.  
+        Учусь на направлении «Информационные системы и технологии».  
+        Интересуюсь веб-разработкой, автоматизацией и стартапами.
+    </p>
+</section>
+
+<section class="skills">
+    <h2>Навыки</h2>
+    <div class="grid">
+        <div class="card">Python</div>
+        <div class="card">C++</div>
+        <div class="card">HTML / CSS</div>
+        <div class="card">JavaScript</div>
+        <div class="card">Git / GitHub</div>
+        <div class="card">SQL (база)</div>
+    </div>
+</section>
+
+<section class="projects" id="projects">
+    <h2>Проекты</h2>
+
+    <div class="project">
+        <h3>Анализ глифов</h3>
+        <p>Программа для анализа изображений: плотность, связность, периметр.</p>
+        <a href="#">GitHub</a>
+    </div>
+
+    <div class="project">
+        <h3>Автоматизация документов</h3>
+        <p>Веб-прототип для генерации первичных бухгалтерских документов.</p>
+        <a href="#">GitHub</a>
+    </div>
+</section>
+
+<section class="education">
+    <h2>Образование</h2>
+    <p>Техник-программист (2023)</p>
+    <p>ИСиТ — бакалавриат (в процессе)</p>
+</section>
+
+<section class="contacts">
+    <h2>Контакты</h2>
+    <p>Email: tro08072012@gmail.com</p>
+    <p>GitHub: github.com/makc999-hab</p>
+    <p>Telegram: @xxxtentac1onxx</p>
+</section>
+
+<footer>
+    <p>© 2026 Максим Перепелица</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
+<section class="resume">
+    <h2>Resume</h2>
+    <a href="resume.pdf" download class="download-btn">
+        Download PDF
+    </a>
+</section>
