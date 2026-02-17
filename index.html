@@ -2,84 +2,59 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Максим Перепелица — Developer</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyBot — Все нейросети для студентов</title>
+    <link href="css/style.css" rel="stylesheet">
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <!-- Stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
+    <header class="container">
+        <div class="logo">StudyBot</div>
+        <nav>
+            <a href="#features">Функции</a>
+            <a href="#pricing">Подписка</a>
+            <a href="#contact">Контакты</a>
+        </nav>
+    </header>
 
-<header class="hero">
-    <div class="lang-switch">
-        <button onclick="setLang('ru')">RU</button>
-        <button onclick="setLang('en')">EN</button>  
+    <section class="hero">
+        <h1>Все нейросети для студентов в одном месте</h1>
+        <p>Используй ИИ для учебы, подготовки к экзаменам и проектов.</p>
+        <button id="signup-btn">Регистрация / Вход</button>
+    </section>
+
+    <!-- Форма регистрации -->
+    <div id="auth-form" class="auth-form hidden">
+        <h2>Регистрация / Вход</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Пароль">
+        <button id="signup">Зарегистрироваться</button>
+        <button id="login">Войти</button>
+        <button id="close-auth">Закрыть</button>
     </div>
 
-    <h1 id="name">Maxim Perepelitsa</h1>
-    <p id="title">Junior Developer • Python / C++ / Web</p>
-    <button onclick="scrollToSection('projects')" id="cta">
-        View projects
-    </button>
-</header>
+    <!-- Чат с ИИ -->
+    <section id="chat" class="container hidden">
+        <h2>Чат с ИИ</h2>
+        <div id="messages"></div>
+        <input type="text" id="user-input" placeholder="Напиши вопрос...">
+        <button id="send">Отправить</button>
+    </section>
 
-<section class="about">
-    <h2>Обо мне</h2>
-    <p>
-        23 года. Образование — техник-программист.  
-        Учусь на направлении «Информационные системы и технологии».  
-        Интересуюсь веб-разработкой, автоматизацией и стартапами.
-    </p>
-</section>
+    <!-- Подписка -->
+    <section id="pricing" class="container">
+        <h2>Подписка</h2>
+        <button id="checkout-btn">Оплатить 499 ₽ / месяц</button>
+    </section>
 
-<section class="skills">
-    <h2>Навыки</h2>
-    <div class="grid">
-        <div class="card">Python</div>
-        <div class="card">C++</div>
-        <div class="card">HTML / CSS</div>
-        <div class="card">JavaScript</div>
-        <div class="card">Git / GitHub</div>
-        <div class="card">SQL (база)</div>
-    </div>
-</section>
+    <footer>
+        <p>© 2026 StudyBot. Все права защищены.</p>
+    </footer>
 
-<section class="projects" id="projects">
-    <h2>Проекты</h2>
-
-    <div class="project">
-        <h3>Анализ глифов</h3>
-        <p>Программа для анализа изображений: плотность, связность, периметр.</p>
-        <a href="#">GitHub</a>
-    </div>
-
-    <div class="project">
-        <h3>Автоматизация документов</h3>
-        <p>Веб-прототип для генерации первичных бухгалтерских документов.</p>
-        <a href="#">GitHub</a>
-    </div>
-</section>
-
-<section class="education">
-    <h2>Образование</h2>
-    <p>Техник-программист (2023)</p>
-    <p>ИСиТ — бакалавриат (в процессе)</p>
-</section>
-
-<section class="contacts">
-    <h2>Контакты</h2>
-    <p>Email: tro08072012@gmail.com</p>
-    <p>GitHub: github.com/makc999-hab</p>
-    <p>Telegram: @xxxtentac1onxx</p>
-</section>
-
-<footer>
-    <p>© 2026 Максим Перепелица</p>
-</footer>
-
-<script src="script.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
-<section class="resume">
-    <h2>Resume</h2>
-    <a href="resume.pdf" download class="download-btn">
-        Download PDF
-    </a>
-</section>
