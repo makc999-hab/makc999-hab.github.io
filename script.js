@@ -2,12 +2,12 @@
 
 // ==================== ИНИЦИАЛИЗАЦИЯ FIREBASE ====================
 const firebaseConfig = {
-    apiKey: "eae160e9cc7d3392ef33e64a9e004867685ebc20", // ЗАМЕНИТЕ НА СВОИ ДАННЫЕ
-    authDomain: "study-ai-project.firebaseapp.com",
-    projectId: "study-ai-project",
-    storageBucket: "study-ai-project.appspot.com",
-    messagingSenderId: "123456789012",
-    appId: "1:123456789012:web:abc123def456"
+    apiKey: "AIzaSyBxXXXXXXXXXXXX", // ВАМ НУЖНО НАЙТИ API KEY!
+    authDomain: "emailpassword-2b4ee.firebaseapp.com", // ЭТО ПРАВИЛЬНО
+    projectId: "emailpassword-2b4ee", // ЭТО ПРАВИЛЬНО
+    storageBucket: "emailpassword-2b4ee.appspot.com", // ЭТО ПРАВИЛЬНО
+    messagingSenderId: "XXXXXXXXXXXX", // НУЖНО НАЙТИ
+    appId: "1:XXXXXXXXXXXX:web:XXXXXXXXXXXX" // НУЖНО НАЙТИ
 };
 
 // Инициализация Firebase
