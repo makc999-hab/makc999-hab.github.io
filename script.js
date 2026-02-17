@@ -1,65 +1,66 @@
-// Firebase config
-const firebaseConfig = {
-    apiKey: "YOUR_FIREBASE_API_KEY",
-    authDomain: "YOUR_FIREBASE_PROJECT.firebaseapp.com",
-    projectId: "YOUR_FIREBASE_PROJECT",
+// Получаем ссылки на элементы DOM
+const modal = document.getElementById("loginModal");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const loginButton = document.querySelector(".auth.email"); // Кнопка "Войти" для email/password
+
+// Открытие модального окна при клике на кнопку "Start free 14 trial"
+document.querySelector(".btn").onclick = () => {
+  modal.classList.remove("hidden");
 };
-firebase.initializeApp(firebaseConfig);
+
+// Закрытие модального окна при клике на крестик
+document.getElementById("closeModal").onclick = () => {
+  modal.classList.add("hidden");
+};
+
+// Инициализация Firebase
+// Замени "ТВОЙ_API_KEY" и "ТВОЙ_АUTH_DOMAIN" на свои данные из Firebase Console
+firebase.initializeApp({
+  apiKey: "eae160e9cc7d3392ef33e64a9e004867685ebc20", // Например: "AIzaSyCq3M2h2Q1p7l9d8f6e4c0b5aXyZ"
+  authDomain: "emailpassword-2b4ee" // Например: "emailpassword-2b4ee.firebaseapp.com"
+});
+
+// Получаем объект для работы с аутентификацией
 const auth = firebase.auth();
 
-// Элементы
-const signupBtn = document.getElementById('signup-btn');
-const authForm = document.getElementById('auth-form');
-const emailInput = document.getElementById('email');
-const passwordInput = document.getElementById('password');
-const signup = document.getElementById('signup');
-const login = document.getElementById('login');
-const closeAuth = document.getElementById('close-auth');
-const chat = document.getElementById('chat');
-const messages = document.getElementById('messages');
-const userInput = document.getElementById('user-input');
-const sendBtn = document.getElementById('send');
-const checkoutBtn = document.getElementById('checkout-btn');
+// Обработчик клика для кнопки "Войти" (Email/Password)
+loginButton.onclick = () => {
+  const email = emailInput.value;
+  const password = passwordInput.value;
 
-// Показываем форму регистрации
-signupBtn.onclick = () => authForm.classList.remove('hidden');
-closeAuth.onclick = () => authForm.classList.add('hidden');
-
-// Регистрация
-signup.onclick = () => {
-    auth.createUserWithEmailAndPassword(emailInput.value, passwordInput.value)
-        .then(() => { alert('Успешно!'); authForm.classList.add('hidden'); chat.classList.remove('hidden'); })
-        .catch(err => alert(err.message));
-}
-
-// Вход
-login.onclick = () => {
-    auth.signInWithEmailAndPassword(emailInput.value, passwordInput.value)
-        .then(() => { alert('Вход успешен'); authForm.classList.add('hidden'); chat.classList.remove('hidden'); })
-        .catch(err => alert(err.message));
-}
-
-// Чат с ИИ
-sendBtn.onclick = async () => {
-    const msg = userInput.value;
-    messages.innerHTML += `<p><b>Вы:</b> ${msg}</p>`;
-    userInput.value = '';
-    
-    // Запрос к serverless функции
-    const res = await fetch('/.netlify/functions/openai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg })
+  auth.signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      // Пользователь успешно вошел
+      alert("Успешный вход!");
+      modal.classList.add("hidden"); // Скрываем модальное окно после успешного входа
+      // Здесь ты можешь добавить логику для обновления UI или перенаправления
+      console.log("Вошел пользователь:", userCredential.user);
+    })
+    .catch(err => {
+      // Обработка ошибок входа
+      alert("Ошибка входа: " + err.message);
+      console.error("Ошибка входа:", err);
     });
-    const data = await res.json();
-    messages.innerHTML += `<p><b>ИИ:</b> ${data.reply}</p>`;
-    messages.scrollTop = messages.scrollHeight;
-}
+};
 
-// Оплата через Stripe
-const stripe = Stripe('YOUR_STRIPE_PUBLISHABLE_KEY');
-checkoutBtn.onclick = async () => {
-    const res = await fetch('/.netlify/functions/checkout', { method: 'POST' });
-    const session = await res.json();
-    stripe.redirectToCheckout({ sessionId: session.id });
+// Дополнительно: ты можешь добавить обработчик для регистрации, если тебе нужна такая кнопка
+// Например, если у тебя есть кнопка "Зарегистрироваться"
+/*
+const registerButton = document.getElementById("registerButton"); // Пример ID для кнопки регистрации
+if (registerButton) {
+  registerButton.onclick = () => {
+    const email = emailInput.value;
+    const password = passwordInput.value;
+
+    auth.createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        alert("Успешная регистрация: " + userCredential.user.email);
+        modal.classList.add("hidden");
+      })
+      .catch((error) => {
+        alert("Ошибка регистрации: " + error.message);
+      });
+  };
 }
+*/
