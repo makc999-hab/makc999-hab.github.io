@@ -279,21 +279,23 @@ body {
     width: 56px;
     height: 56px;
     background: linear-gradient(135deg, #7C3AED, #C084FC);
-    border-radius: 50%; /* КРУГЛАЯ! */
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 28px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     overflow: hidden;
     flex-shrink: 0;
     color: white;
+    position: relative;
+    z-index: 1;
 }
 
 .bot-icon-image {
     width: 56px;
     height: 56px;
-    border-radius: 50%; /* Тоже круглая */
+    border-radius: 50%;
     object-fit: cover;
 }
 
@@ -339,7 +341,7 @@ body {
 /* Контейнер для токенов и статистики */
 .card-stats-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     margin: 12px 0;
     padding: 8px 0;
@@ -348,22 +350,22 @@ body {
 }
 
 /* Цена в токенах */
-.card-token-price {
+.card-token-price-top {
     background: rgba(124, 58, 237, 0.15);
     border: 1px solid rgba(124, 58, 237, 0.3);
     border-radius: 100px;
-    padding: 4px 12px;
-    font-size: 13px;
-    font-weight: 600;
+    padding: 6px 14px;
+    font-size: 16px;
+    font-weight: 700;
     color: #C084FC;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
 }
 
-.card-token-price::before {
+.card-token-price-top::before {
     content: '⚡';
-    font-size: 14px;
+    font-size: 18px;
 }
 
 /* Статистика */
@@ -482,6 +484,703 @@ body {
     }
 }
 
+/* ==================== ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ ==================== */
+.theme-toggle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 16px;
+    transition: all 0.3s;
+}
+
+.theme-toggle:hover {
+    background: rgba(124, 58, 237, 0.2);
+    transform: scale(1.1);
+}
+
+.theme-icon {
+    font-size: 20px;
+}
+
+/* ==================== СВЕТЛАЯ ТЕМА (ПОЛНАЯ ВЕРСИЯ) ==================== */
+body.light-theme {
+    background: #f5f5f7;
+    color: #333333;
+}
+
+body.light-theme .header {
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .logo {
+    background: linear-gradient(135deg, #7C3AED, #C084FC);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+body.light-theme .nav-link {
+    color: #666666;
+}
+
+body.light-theme .nav-link:hover,
+body.light-theme .nav-link.active {
+    color: #7C3AED;
+}
+
+body.light-theme .search-input {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #333333;
+}
+
+body.light-theme .search-input::placeholder {
+    color: #999999;
+}
+
+body.light-theme .neural-card {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+body.light-theme .card-title {
+    color: #333333 !important;
+}
+
+body.light-theme .card-description {
+    color: #666666 !important;
+}
+
+body.light-theme .tag {
+    background: rgba(0, 0, 0, 0.05);
+    color: #666666 !important;
+}
+
+body.light-theme .card-stats-container {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .card-stats {
+    color: #666666 !important;
+}
+
+body.light-theme .card-token-price-top {
+    background: rgba(124, 58, 237, 0.1);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    color: #7C3AED;
+}
+
+body.light-theme .card-badge {
+    background: rgba(124, 58, 237, 0.1);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    color: #7C3AED;
+}
+
+body.light-theme .card-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .use-btn {
+    background: transparent;
+    border: 1px solid #7C3AED;
+    color: #7C3AED;
+}
+
+body.light-theme .use-btn:hover {
+    background: #7C3AED;
+    color: white;
+}
+
+body.light-theme .favorite-btn {
+    color: #FBBF24;
+}
+
+body.light-theme .modal-content {
+    background: white;
+    color: #333333;
+}
+
+body.light-theme .modal-content h2 {
+    color: #333333;
+}
+
+body.light-theme .modal-subtitle {
+    color: #666666;
+}
+
+body.light-theme .modal-input {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #333333;
+}
+
+body.light-theme .modal-btn {
+    background: #7C3AED;
+    color: white;
+}
+
+body.light-theme .social-btn {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #333333;
+}
+
+body.light-theme .social-btn:hover {
+    background: rgba(124, 58, 237, 0.1);
+    border-color: #7C3AED;
+    color: #7C3AED;
+}
+
+body.light-theme .policy-text {
+    color: #999999;
+}
+
+body.light-theme .chat-modal-content {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .chat-header {
+    background: rgba(0, 0, 0, 0.02);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .chat-header-info h3 {
+    color: #333333;
+}
+
+body.light-theme .chat-bot-desc {
+    color: #666666;
+}
+
+body.light-theme .chat-messages {
+    background: #f9f9f9;
+}
+
+body.light-theme .bot-message {
+    background: rgba(0, 0, 0, 0.05);
+    color: #333333;
+}
+
+body.light-theme .user-message {
+    background: #7C3AED;
+    color: white;
+}
+
+body.light-theme .message-time {
+    color: #999999;
+}
+
+body.light-theme .chat-input-area {
+    background: white;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .chat-input-wrapper textarea {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #333333;
+}
+
+body.light-theme .chat-input-wrapper textarea::placeholder {
+    color: #999999;
+}
+
+body.light-theme .chat-tool {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #666666;
+}
+
+body.light-theme .chat-tool:hover {
+    background: rgba(124, 58, 237, 0.1);
+    border-color: #7C3AED;
+    color: #7C3AED;
+}
+
+body.light-theme .profile-modal {
+    background: white;
+}
+
+body.light-theme .profile-info {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+body.light-theme .profile-details p {
+    color: #666666;
+}
+
+body.light-theme .profile-details strong {
+    color: #333333;
+}
+
+body.light-theme .stat-card {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+body.light-theme .stat-value {
+    color: #333333;
+}
+
+body.light-theme .stat-label {
+    color: #666666;
+}
+
+body.light-theme .recent-bot-item {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+body.light-theme .recent-bot-item:hover {
+    background: rgba(124, 58, 237, 0.1);
+}
+
+body.light-theme .recent-bot-name {
+    color: #333333;
+}
+
+body.light-theme .recent-bot-time {
+    color: #999999;
+}
+
+body.light-theme .notification {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .notification-message {
+    color: #333333;
+}
+/* ==================== СВЕТЛАЯ ТЕМА - ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ==================== */
+body.light-theme .page-header h1 {
+    color: #333333;
+    background: linear-gradient(135deg, #333333, #7C3AED);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+body.light-theme .page-description {
+    color: #666666;
+}
+
+body.light-theme .section-title {
+    color: #333333;
+}
+
+body.light-theme .category-chip {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #666666;
+}
+
+body.light-theme .category-chip:hover {
+    background: rgba(124, 58, 237, 0.1);
+    border-color: #7C3AED;
+    color: #7C3AED;
+}
+
+body.light-theme .category-chip.active {
+    background: #7C3AED;
+    border-color: #7C3AED;
+    color: white;
+}
+
+body.light-theme .section-header h2 {
+    color: #333333;
+}
+
+body.light-theme .view-all {
+    color: #7C3AED;
+}
+
+body.light-theme .view-all:hover {
+    color: #6D28D9;
+}
+
+body.light-theme .neural-section h2 {
+    color: #333333;
+}
+/* ==================== СВЕТЛАЯ ТЕМА - КНОПКИ ПРОФИЛЯ ==================== */
+body.light-theme .btn-outline {
+    background: transparent;
+    border: 1px solid #7C3AED;
+    color: #7C3AED;
+}
+
+body.light-theme .btn-outline:hover {
+    background: #7C3AED;
+    color: white;
+}
+
+body.light-theme .user-profile .btn-outline {
+    background: transparent;
+    border: 1px solid #7C3AED;
+    color: #7C3AED;
+}
+
+body.light-theme .user-profile .btn-outline:hover {
+    background: #7C3AED;
+    color: white;
+}
+
+body.light-theme .user-email {
+    color: #666666;
+}
+
+body.light-theme #profileBtn,
+body.light-theme #logoutBtn {
+    background: transparent;
+    border: 1px solid #7C3AED;
+    color: #7C3AED;
+}
+
+body.light-theme #profileBtn:hover,
+body.light-theme #logoutBtn:hover {
+    background: #7C3AED;
+    color: white;
+}
+/* ==================== МАГАЗИН ТОКЕНОВ ==================== */
+.shop-modal {
+    max-width: 800px !important;
+    width: 90%;
+}
+
+.token-packages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.token-package {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.token-package:hover {
+    transform: translateY(-4px);
+    border-color: #7C3AED;
+    background: rgba(124, 58, 237, 0.05);
+}
+
+.token-package.popular {
+    border: 2px solid #7C3AED;
+    background: rgba(124, 58, 237, 0.1);
+}
+
+.package-badge {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    background: #7C3AED;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.package-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.package-info h3 {
+    font-size: 20px;
+    margin-bottom: 4px;
+    color: #FFFFFF;
+}
+
+.package-info p {
+    font-size: 13px;
+    color: #A0A0A8;
+    margin-bottom: 12px;
+}
+
+.package-price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #C084FC;
+    margin-bottom: 16px;
+}
+
+.buy-package-btn {
+    background: transparent;
+    border: 1px solid #7C3AED;
+    color: #FFFFFF;
+    padding: 8px 24px;
+    border-radius: 100px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.buy-package-btn:hover {
+    background: #7C3AED;
+}
+
+/* ==================== ТАРИФЫ ==================== */
+.pricing-modal {
+    max-width: 1100px !important;
+    width: 95%;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.pricing-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 30px 20px;
+    position: relative;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.pricing-card:hover {
+    transform: translateY(-4px);
+    border-color: #7C3AED;
+}
+
+.pricing-card.popular {
+    border: 2px solid #7C3AED;
+    background: rgba(124, 58, 237, 0.05);
+    transform: scale(1.05);
+    z-index: 2;
+}
+
+.popular-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #7C3AED;
+    color: white;
+    padding: 6px 20px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.pricing-card h3 {
+    font-size: 24px;
+    margin-bottom: 16px;
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.price {
+    font-size: 36px;
+    font-weight: 700;
+    color: #C084FC;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.price span {
+    font-size: 16px;
+    color: #A0A0A8;
+    font-weight: 400;
+}
+
+.features {
+    list-style: none;
+    margin-bottom: 30px;
+    flex: 1;
+}
+
+.features li {
+    padding: 8px 0;
+    color: #A0A0A8;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.features li:last-child {
+    border-bottom: none;
+}
+
+.subscribe-btn {
+    width: 100%;
+    padding: 12px !important;
+}
+
+/* ==================== ПОДДЕРЖКА ==================== */
+.support-modal {
+    max-width: 900px !important;
+    width: 95%;
+}
+
+.support-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.support-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.support-card:hover {
+    border-color: #7C3AED;
+    background: rgba(124, 58, 237, 0.05);
+}
+
+.support-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+}
+
+.support-card h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: #FFFFFF;
+}
+
+.support-card p {
+    color: #A0A0A8;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.response-time {
+    font-size: 12px !important;
+    color: #7C3AED !important;
+}
+
+.faq-btn {
+    background: transparent;
+    border: 1px solid #7C3AED;
+    color: #FFFFFF;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s;
+}
+
+.faq-btn:hover {
+    background: #7C3AED;
+}
+
+.support-form {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 30px;
+    margin-top: 20px;
+}
+
+.support-form h3 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #FFFFFF;
+}
+
+.support-input,
+.support-textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: #FFFFFF;
+    margin-bottom: 16px;
+    font-family: 'Inter', sans-serif;
+}
+
+.support-input:focus,
+.support-textarea:focus {
+    border-color: #7C3AED;
+    outline: none;
+}
+
+.support-textarea {
+    resize: vertical;
+}
+
+/* Светлая тема для модалок */
+body.light-theme .token-package {
+    background: white;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .package-info h3 {
+    color: #333333;
+}
+
+body.light-theme .pricing-card {
+    background: white;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .pricing-card h3,
+body.light-theme .pricing-card .price {
+    color: #333333;
+}
+
+body.light-theme .price span {
+    color: #666666;
+}
+
+body.light-theme .features li {
+    color: #666666;
+    border-bottom-color: rgba(0, 0, 0, 0.05);
+}
+
+body.light-theme .support-card {
+    background: white;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .support-card h3 {
+    color: #333333;
+}
+
+body.light-theme .support-form {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+body.light-theme .support-form h3 {
+    color: #333333;
+}
+
+body.light-theme .support-input,
+body.light-theme .support-textarea {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #333333;
+}
 /* ==================== МОДАЛЬНЫЕ ОКНА ==================== */
 .modal {
     position: fixed;
