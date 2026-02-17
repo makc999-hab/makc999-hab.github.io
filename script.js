@@ -1,66 +1,70 @@
-// Получаем ссылки на элементы DOM
+// DOM
 const modal = document.getElementById("loginModal");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
-const loginButton = document.querySelector(".auth.email"); // Кнопка "Войти" для email/password
+const loginButton = document.querySelector(".auth.email");
 
-// Открытие модального окна при клике на кнопку "Start free 14 trial"
+const question = document.getElementById("question");
+const messages = document.getElementById("messages");
+const askBtn = document.getElementById("ask");
+
+// Открытие модалки
 document.querySelector(".btn").onclick = () => {
   modal.classList.remove("hidden");
 };
 
-// Закрытие модального окна при клике на крестик
+// Закрытие
 document.getElementById("closeModal").onclick = () => {
   modal.classList.add("hidden");
 };
 
-// Инициализация Firebase
-// Замени "ТВОЙ_API_KEY" и "ТВОЙ_АUTH_DOMAIN" на свои данные из Firebase Console
+// Firebase
 firebase.initializeApp({
-  apiKey: "eae160e9cc7d3392ef33e64a9e004867685ebc20", // Например: "AIzaSyCq3M2h2Q1p7l9d8f6e4c0b5aXyZ"
-  authDomain: "emailpassword-2b4ee" // Например: "emailpassword-2b4ee.firebaseapp.com"
+  apiKey: "ВСТАВЬ_СВОЙ_REAL_API_KEY",
+  authDomain: "emailpassword-2b4ee.firebaseapp.com"
 });
 
-// Получаем объект для работы с аутентификацией
 const auth = firebase.auth();
 
-// Обработчик клика для кнопки "Войти" (Email/Password)
+// Логин
 loginButton.onclick = () => {
   const email = emailInput.value;
   const password = passwordInput.value;
 
   auth.signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      // Пользователь успешно вошел
+    .then(user => {
       alert("Успешный вход!");
-      modal.classList.add("hidden"); // Скрываем модальное окно после успешного входа
-      // Здесь ты можешь добавить логику для обновления UI или перенаправления
-      console.log("Вошел пользователь:", userCredential.user);
+      modal.classList.add("hidden");
+      console.log("User:", user.user.email);
     })
     .catch(err => {
-      // Обработка ошибок входа
-      alert("Ошибка входа: " + err.message);
-      console.error("Ошибка входа:", err);
+      alert(err.message);
     });
 };
 
-// Дополнительно: ты можешь добавить обработчик для регистрации, если тебе нужна такая кнопка
-// Например, если у тебя есть кнопка "Зарегистрироваться"
-/*
-const registerButton = document.getElementById("registerButton"); // Пример ID для кнопки регистрации
-if (registerButton) {
-  registerButton.onclick = () => {
-    const email = emailInput.value;
-    const password = passwordInput.value;
+// AI Chat
+askBtn.onclick = async () => {
+  const q = question.value;
+  if (!q) return;
 
-    auth.createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        alert("Успешная регистрация: " + userCredential.user.email);
-        modal.classList.add("hidden");
-      })
-      .catch((error) => {
-        alert("Ошибка регистрации: " + error.message);
-      });
-  };
-}
-*/
+  messages.innerHTML += `<p><b>Вы:</b> ${q}</p>`;
+  question.value = "";
+
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ТВОЙ_OPENAI_KEY"
+    },
+    body: JSON.stringify({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: q }]
+    })
+  });
+
+  const data = await res.json();
+  const answer = data.choices[0].message.content;
+
+  messages.innerHTML += `<p><b>ИИ:</b> ${answer}</p>`;
+};
+  
