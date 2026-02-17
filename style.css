@@ -279,7 +279,7 @@ body {
     width: 56px;
     height: 56px;
     background: linear-gradient(135deg, #7C3AED, #C084FC);
-    border-radius: 12px; /* Квадратная со скруглением */
+    border-radius: 50%; /* КРУГЛАЯ! */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -287,13 +287,14 @@ body {
     margin-bottom: 20px;
     overflow: hidden;
     flex-shrink: 0;
+    color: white;
 }
 
 .bot-icon-image {
-    width: 100%;
-    height: 100%;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%; /* Тоже круглая */
     object-fit: cover;
-    border-radius: 12px;
 }
 
 /* Заголовок */
