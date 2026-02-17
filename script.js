@@ -323,12 +323,12 @@ function renderBots(botsToRender = botsData) {
         ${bot.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
     </div>
     <div class="card-stats-container">
-        <span class="card-token-price">⚡ ${bot.tokenPrice} токенов</span>
-        <div class="card-stats">
-            <span class="stat"><span class="stat-star">★</span> ${bot.rating}</span>
-            <span class="stat">👤 ${bot.users}</span>
-        </div>
+    <span class="card-token-price">⚡ ${bot.tokenPrice} токенов</span>
+    <div class="card-stats">
+        <span class="stat"><span class="stat-star">★</span> ${bot.rating}</span>
+        <span class="stat">👤 ${bot.users}</span>
     </div>
+</div>
     <div class="card-footer">
         <button class="favorite-btn ${isFavorite ? 'active' : ''}" data-bot="${bot.id}">
             ${isFavorite ? '★' : '☆'}
