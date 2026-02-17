@@ -13,20 +13,25 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Хедер -->
-    <header class="header">
+    <!-- Хедер с кнопкой темы -->
+<header class="header">
+    <div style="display: flex; align-items: center;">
         <div class="logo">StudyAI</div>
-        <nav class="nav-menu">
-            <a href="#" class="nav-link active">Нейросети</a>
-            <a href="#" class="nav-link">Магазин</a>
-            <a href="#" class="nav-link">Тарифы</a>
-            <a href="#" class="nav-link">Поддержка</a>
-        </nav>
-        <div class="user-menu" id="userMenu">
-            <button class="btn-outline" id="loginBtn">Войти</button>
-            <button class="btn-primary" id="registerBtn">Регистрация</button>
+        <div class="theme-toggle" id="themeToggle">
+            <span class="theme-icon">🌙</span>
         </div>
-    </header>
+    </div>
+    <nav class="nav-menu">
+        <a href="#" class="nav-link active">Нейросети</a>
+        <a href="#" class="nav-link">Магазин</a>
+        <a href="#" class="nav-link">Тарифы</a>
+        <a href="#" class="nav-link">Поддержка</a>
+    </nav>
+    <div class="user-menu" id="userMenu">
+        <button class="btn-outline" id="loginBtn">Войти</button>
+        <button class="btn-primary" id="registerBtn">Регистрация</button>
+    </div>
+</header>
 
     <main class="container">
         <!-- Заголовок страницы -->
@@ -93,5 +98,157 @@
     </div>
 
     <script src="script.js"></script>
+        <!-- Модальное окно Магазин -->
+        <div id="shopModal" class="modal hidden">
+            <div class="modal-content shop-modal">
+                <button class="modal-close" id="closeShop">✕</button>
+                <h2>🛍️ Магазин токенов</h2>
+                <p class="modal-subtitle">Пополните баланс и покупайте токены для нейросетей</p>
+                
+                <div class="token-packages">
+                    <div class="token-package" data-tokens="100">
+                        <div class="package-icon">⚡</div>
+                        <div class="package-info">
+                            <h3>100 токенов</h3>
+                            <p>Для небольших задач</p>
+                        </div>
+                        <div class="package-price">$5</div>
+                        <button class="buy-package-btn" data-tokens="100" data-price="5">Купить</button>
+                    </div>
+                    
+                    <div class="token-package popular" data-tokens="500">
+                        <div class="package-badge">Популярное</div>
+                        <div class="package-icon">⚡⚡</div>
+                        <div class="package-info">
+                            <h3>500 токенов</h3>
+                            <p>Для активного использования</p>
+                        </div>
+                        <div class="package-price">$20</div>
+                        <button class="buy-package-btn" data-tokens="500" data-price="20">Купить</button>
+                    </div>
+                    
+                    <div class="token-package" data-tokens="1000">
+                        <div class="package-icon">⚡⚡⚡</div>
+                        <div class="package-info">
+                            <h3>1000 токенов</h3>
+                            <p>Для профессионалов</p>
+                        </div>
+                        <div class="package-price">$35</div>
+                        <button class="buy-package-btn" data-tokens="1000" data-price="35">Купить</button>
+                    </div>
+                    
+                    <div class="token-package" data-tokens="5000">
+                        <div class="package-icon">⚡⚡⚡⚡</div>
+                        <div class="package-info">
+                            <h3>5000 токенов</h3>
+                            <p>Для команд и бизнеса</p>
+                        </div>
+                        <div class="package-price">$150</div>
+                        <button class="buy-package-btn" data-tokens="5000" data-price="150">Купить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Модальное окно Тарифы -->
+        <div id="pricingModal" class="modal hidden">
+            <div class="modal-content pricing-modal">
+                <button class="modal-close" id="closePricing">✕</button>
+                <h2>📊 Тарифные планы</h2>
+                <p class="modal-subtitle">Выберите подходящий план для ваших задач</p>
+                
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3>Базовый</h3>
+                        <div class="price">$15<span>/мес</span></div>
+                        <ul class="features">
+                            <li>✅ 500 токенов в месяц</li>
+                            <li>✅ Доступ к ChatGPT 5.2</li>
+                            <li>✅ Доступ к Midjourney</li>
+                            <li>✅ Поддержка по email</li>
+                            <li>❌ Доступ к видео-генераторам</li>
+                            <li>❌ Приоритетная поддержка</li>
+                        </ul>
+                        <button class="btn-primary subscribe-btn" data-plan="basic">Выбрать</button>
+                    </div>
+                    
+                    <div class="pricing-card popular">
+                        <div class="popular-badge">🔥 Хит продаж</div>
+                        <h3>PRO</h3>
+                        <div class="price">$75<span>/мес</span></div>
+                        <ul class="features">
+                            <li>✅ 3000 токенов в месяц</li>
+                            <li>✅ Доступ ко всем нейросетям</li>
+                            <li>✅ Генерация видео до 10 минут</li>
+                            <li>✅ Поддержка 24/7</li>
+                            <li>✅ Приоритетная обработка</li>
+                            <li>✅ API доступ</li>
+                        </ul>
+                        <button class="btn-primary subscribe-btn" data-plan="pro">Выбрать</button>
+                    </div>
+                    
+                    <div class="pricing-card">
+                        <h3>Enterprise</h3>
+                        <div class="price">$150<span>/мес</span></div>
+                        <ul class="features">
+                            <li>✅ 10000 токенов в месяц</li>
+                            <li>✅ Неограниченный доступ</li>
+                            <li>✅ Генерация видео до 30 минут</li>
+                            <li>✅ Выделенный менеджер</li>
+                            <li>✅ Индивидуальные решения</li>
+                            <li>✅ SLA гарантии</li>
+                        </ul>
+                        <button class="btn-primary subscribe-btn" data-plan="enterprise">Выбрать</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Модальное окно Поддержка -->
+        <div id="supportModal" class="modal hidden">
+            <div class="modal-content support-modal">
+                <button class="modal-close" id="closeSupport">✕</button>
+                <h2>🆘 Центр поддержки</h2>
+                <p class="modal-subtitle">Мы всегда готовы помочь вам</p>
+                
+                <div class="support-grid">
+                    <div class="support-card">
+                        <div class="support-icon">📧</div>
+                        <h3>Email</h3>
+                        <p>support@studyai.com</p>
+                        <p class="response-time">Ответ: до 24 часов</p>
+                    </div>
+                    
+                    <div class="support-card">
+                        <div class="support-icon">💬</div>
+                        <h3>Telegram</h3>
+                        <p>@studyai_support</p>
+                        <p class="response-time">Ответ: до 1 часа</p>
+                    </div>
+                    
+                    <div class="support-card">
+                        <div class="support-icon">📱</div>
+                        <h3>VK</h3>
+                        <p>vk.com/studyai</p>
+                        <p class="response-time">Ответ: до 2 часов</p>
+                    </div>
+                    
+                    <div class="support-card">
+                        <div class="support-icon">❓</div>
+                        <h3>FAQ</h3>
+                        <p>Часто задаваемые вопросы</p>
+                        <button class="faq-btn" id="openFaq">Открыть FAQ</button>
+                    </div>
+                </div>
+                
+                <div class="support-form">
+                    <h3>📝 Отправить сообщение</h3>
+                    <input type="text" id="supportName" placeholder="Ваше имя" class="support-input">
+                    <input type="email" id="supportEmail" placeholder="Ваш email" class="support-input">
+                    <textarea id="supportMessage" placeholder="Опишите вашу проблему..." rows="4" class="support-textarea"></textarea>
+                    <button class="btn-primary" id="sendSupportMessage">Отправить</button>
+                </div>
+            </div>
+        </div>
 </body>
 </html>
