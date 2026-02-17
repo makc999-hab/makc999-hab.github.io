@@ -1,6 +1,5 @@
 // functions.js - Серверные функции (для Netlify Functions)
 import Stripe from "stripe";
-import fetch from 'node-fetch';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
