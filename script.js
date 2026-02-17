@@ -453,7 +453,9 @@ function attachBotEventHandlers() {
             const bot = botsData.find(b => b.id === botId);
             
             addToRecentBots(bot);
-            showNotification(`Чат с ${bot.name} откроется после настройки API`, 'info');
+            
+            // Открываем чат с ботом (ВМЕСТО УВЕДОМЛЕНИЯ)
+            openBotChat(bot);
         });
     });
 }
@@ -655,7 +657,192 @@ function addToRecentBots(bot) {
     recentBots = recentBots.slice(0, 10);
     localStorage.setItem('recentBots', JSON.stringify(recentBots));
 }
+// ==================== ЧАТ С БОТОМ ====================
 
+// Функция для открытия чата
+function openBotChat(bot) {
+    // Создаем модальное окно чата
+    const chatModal = document.createElement('div');
+    chatModal.className = 'modal chat-modal';
+    chatModal.id = 'chatModal';
+    
+    chatModal.innerHTML = `
+        <div class="chat-modal-content">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <img src="${getIconPath(bot.id)}" alt="${bot.name}" class="chat-bot-icon" style="width: 40px; height: 40px; border-radius: 50%;">
+                    <div>
+                        <h3>${bot.name}</h3>
+                        <p class="chat-bot-desc">${bot.description.substring(0, 50)}...</p>
+                    </div>
+                </div>
+                <button class="chat-close" id="closeChat">✕</button>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <img src="${getIconPath(bot.id)}" alt="${bot.name}" class="message-avatar" style="width: 36px; height: 36px; border-radius: 50%;">
+                    <div class="message-content bot-message">
+                        <p>Здравствуйте! Я ${bot.name}. Чем могу помочь?</p>
+                        <span class="message-time">${new Date().toLocaleTimeString()}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-area">
+                <div class="chat-input-wrapper">
+                    <textarea id="chatInput" placeholder="Введите сообщение... (Enter для отправки)" rows="1"></textarea>
+                    <button class="chat-send-btn" id="sendMessage">📤</button>
+                </div>
+                <div class="chat-tools">
+                    <button class="chat-tool" id="clearChat">🗑️ Очистить</button>
+                    <button class="chat-tool" id="buyTokensBtn">⚡ Купить токены (${bot.tokenPrice} за запрос)</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(chatModal);
+    chatModal.classList.remove('hidden');
+    
+    // Инициализация чата
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendMessage');
+    const chatMessages = document.getElementById('chatMessages');
+    const closeBtn = document.getElementById('closeChat');
+    const clearBtn = document.getElementById('clearChat');
+    const buyTokensBtn = document.getElementById('buyTokensBtn');
+    
+    // Автоматическое расширение textarea
+    chatInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+    
+    // Отправка сообщения
+    async function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
+        
+        // Добавляем сообщение пользователя
+        addMessageToChat(chatMessages, message, 'user', bot);
+        chatInput.value = '';
+        chatInput.style.height = 'auto';
+        
+        // Показываем индикатор печати
+        const typingId = showTypingIndicator(chatMessages, bot);
+        
+        try {
+            // Вызываем API через Netlify Function
+            const response = await fetch('/.netlify/functions/functions/api/proxy/openai', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    messages: [{ role: 'user', content: message }]
+                })
+            });
+            
+            const data = await response.json();
+            
+            // Убираем индикатор печати
+            document.getElementById(typingId)?.remove();
+            
+            // Добавляем ответ
+            if (data.choices && data.choices[0]) {
+                addMessageToChat(chatMessages, data.choices[0].message.content, 'bot', bot);
+            } else {
+                addMessageToChat(chatMessages, 'Извините, произошла ошибка. Попробуйте позже.', 'bot', bot);
+            }
+        } catch (error) {
+            document.getElementById(typingId)?.remove();
+            addMessageToChat(chatMessages, 'Ошибка соединения. Проверьте настройки API.', 'bot', bot);
+            console.error('Chat error:', error);
+        }
+    }
+    
+    sendBtn.addEventListener('click', sendMessage);
+    
+    chatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+    
+    closeBtn.addEventListener('click', () => {
+        chatModal.remove();
+    });
+    
+    clearBtn.addEventListener('click', () => {
+        chatMessages.innerHTML = `
+            <div class="message bot">
+                <img src="${getIconPath(bot.id)}" alt="${bot.name}" class="message-avatar" style="width: 36px; height: 36px; border-radius: 50%;">
+                <div class="message-content bot-message">
+                    <p>Здравствуйте! Я ${bot.name}. Чем могу помочь?</p>
+                    <span class="message-time">${new Date().toLocaleTimeString()}</span>
+                </div>
+            </div>
+        `;
+    });
+    
+    buyTokensBtn.addEventListener('click', () => {
+        buyBotTokens(bot.id, 100);
+    });
+    
+    chatInput.focus();
+}
+
+// Вспомогательная функция для добавления сообщения в чат
+function addMessageToChat(container, text, sender, bot) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}`;
+    
+    const time = new Date().toLocaleTimeString();
+    
+    if (sender === 'user') {
+        messageDiv.innerHTML = `
+            <div class="message-content user-message">
+                <p>${text}</p>
+                <span class="message-time">${time}</span>
+            </div>
+            <div class="message-avatar user-avatar">👤</div>
+        `;
+    } else {
+        messageDiv.innerHTML = `
+            <img src="${getIconPath(bot.id)}" alt="${bot.name}" class="message-avatar" style="width: 36px; height: 36px; border-radius: 50%;">
+            <div class="message-content bot-message">
+                <p>${text}</p>
+                <span class="message-time">${time}</span>
+            </div>
+        `;
+    }
+    
+    container.appendChild(messageDiv);
+    container.scrollTop = container.scrollHeight;
+}
+
+// Индикатор печати
+function showTypingIndicator(container, bot) {
+    const id = 'typing-' + Date.now();
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message bot';
+    typingDiv.id = id;
+    typingDiv.innerHTML = `
+        <img src="${getIconPath(bot.id)}" alt="${bot.name}" class="message-avatar" style="width: 36px; height: 36px; border-radius: 50%;">
+        <div class="message-content bot-message typing-indicator">
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    `;
+    container.appendChild(typingDiv);
+    container.scrollTop = container.scrollHeight;
+    return id;
+}
 // ==================== ПРОФИЛЬ ====================
 function openProfile() {
     const profileModal = document.createElement('div');
