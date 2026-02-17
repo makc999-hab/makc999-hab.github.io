@@ -310,32 +310,32 @@ function renderBots(botsToRender = botsData) {
         }
         
         card.innerHTML = `
-            ${bot.badge ? `<span class="card-badge">${bot.badge}</span>` : ''}
-            <div class="card-icon">
-                <img src="${imagePath}" 
-                     alt="${bot.name}" 
-                     class="bot-icon-image"
-                     onerror="this.style.display='none'; this.parentElement.innerHTML='${bot.icon}';">
-            </div>
-            <h3 class="card-title">${bot.name}</h3>
-            <p class="card-description">${bot.description}</p>
-            <div class="card-tags">
-                ${bot.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
-                <span class="card-token-price">⚡ ${bot.tokenPrice} токенов</span>
-                <div class="card-stats">
-                    <span class="stat"><span class="stat-star">★</span> ${bot.rating}</span>
-                    <span class="stat">👤 ${bot.users}</span>
-                </div>
-            </div>
-            <div class="card-footer">
-                <button class="favorite-btn ${isFavorite ? 'active' : ''}" data-bot="${bot.id}">
-                    ${isFavorite ? '★' : '☆'}
-                </button>
-                <button class="use-btn" data-bot="${bot.id}">Использовать</button>
-            </div>
-        `;
+    ${bot.badge ? `<span class="card-badge">${bot.badge}</span>` : ''}
+    <div class="card-icon">
+        <img src="${imagePath}" 
+             alt="${bot.name}" 
+             class="bot-icon-image"
+             onerror="this.style.display='none'; this.parentElement.innerHTML='${bot.icon}';">
+    </div>
+    <h3 class="card-title">${bot.name}</h3>
+    <p class="card-description">${bot.description}</p>
+    <div class="card-tags">
+        ${bot.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+    </div>
+    <div class="card-stats-container">
+        <span class="card-token-price">⚡ ${bot.tokenPrice} токенов</span>
+        <div class="card-stats">
+            <span class="stat"><span class="stat-star">★</span> ${bot.rating}</span>
+            <span class="stat">👤 ${bot.users}</span>
+        </div>
+    </div>
+    <div class="card-footer">
+        <button class="favorite-btn ${isFavorite ? 'active' : ''}" data-bot="${bot.id}">
+            ${isFavorite ? '★' : '☆'}
+        </button>
+        <button class="use-btn" data-bot="${bot.id}">Использовать</button>
+    </div>
+`;
         
         cardsGrid.appendChild(card);
     });
