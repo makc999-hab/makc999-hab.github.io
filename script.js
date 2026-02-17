@@ -360,6 +360,7 @@ function renderBots(botsToRender = botsData) {
     
     attachBotEventHandlers();
 }
+
 // ==================== НАВИГАЦИЯ ====================
 const shopModal = document.getElementById('shopModal');
 const pricingModal = document.getElementById('pricingModal');
@@ -467,6 +468,7 @@ document.getElementById('sendSupportMessage')?.addEventListener('click', () => {
 document.getElementById('openFaq')?.addEventListener('click', () => {
     showNotification('FAQ будет доступен позже', 'info');
 });
+
 // ==================== ПЛАТЕЖИ ====================
 async function buySubscription(priceType) {
     if (!currentUser) {
@@ -562,7 +564,7 @@ function attachBotEventHandlers() {
             
             addToRecentBots(bot);
             
-            // Открываем чат с ботом (ВМЕСТО УВЕДОМЛЕНИЯ)
+            // Открываем чат с ботом
             openBotChat(bot);
         });
     });
@@ -765,6 +767,7 @@ function addToRecentBots(bot) {
     recentBots = recentBots.slice(0, 10);
     localStorage.setItem('recentBots', JSON.stringify(recentBots));
 }
+
 // ==================== ЧАТ С БОТОМ ====================
 
 // Функция для открытия чата
@@ -951,7 +954,7 @@ function showTypingIndicator(container, bot) {
     container.scrollTop = container.scrollHeight;
     return id;
 }
-// ==================== ПРОФИЛЬ ====================
+
 // ==================== ПРОФИЛЬ ====================
 function openProfile() {
     const profileModal = document.createElement('div');
@@ -1018,16 +1021,16 @@ function openProfile() {
         profileModal.remove();
     });
     
-    // ИСПРАВЛЕНО: теперь открывает чат, а не уведомление
     document.querySelectorAll('.recent-bot-item').forEach(item => {
         item.addEventListener('click', () => {
             const botId = item.dataset.bot;
             const bot = botsData.find(b => b.id === botId);
             profileModal.remove();
-            openBotChat(bot); // ← ОТКРЫВАЕТ ЧАТ!
+            openBotChat(bot);
         });
     });
 }
+
 // ==================== ПЕРЕКЛЮЧЕНИЕ ТЕМЫ ====================
 const themeToggle = document.getElementById('themeToggle');
 const themeIcon = document.querySelector('.theme-icon');
@@ -1052,6 +1055,7 @@ themeToggle.addEventListener('click', () => {
         localStorage.setItem('theme', 'dark');
     }
 });
+
 // ==================== УВЕДОМЛЕНИЯ ====================
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
