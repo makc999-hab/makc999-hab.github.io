@@ -1,9 +1,8 @@
 {
-    "name": "maxperepelitsa-store",
-    "version": "1.0.0",
-    "description": "StudyAI - Нейросети",
-    "dependencies": {
-      "stripe": "^14.0.0",
-      "node-fetch": "^3.3.0"
-    }
+  "name": "maxperepelitsa-store",
+  "version": "1.0.0",
+  "description": "StudyAI - Нейросети",
+  "dependencies": {
+      "stripe": "^14.0.0"
   }
+}
