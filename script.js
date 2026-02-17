@@ -844,6 +844,7 @@ function showTypingIndicator(container, bot) {
     return id;
 }
 // ==================== ПРОФИЛЬ ====================
+// ==================== ПРОФИЛЬ ====================
 function openProfile() {
     const profileModal = document.createElement('div');
     profileModal.className = 'modal';
@@ -909,10 +910,13 @@ function openProfile() {
         profileModal.remove();
     });
     
+    // ИСПРАВЛЕНО: теперь открывает чат, а не уведомление
     document.querySelectorAll('.recent-bot-item').forEach(item => {
         item.addEventListener('click', () => {
+            const botId = item.dataset.bot;
+            const bot = botsData.find(b => b.id === botId);
             profileModal.remove();
-            showNotification('Чат с ботом откроется после настройки API', 'info');
+            openBotChat(bot); // ← ОТКРЫВАЕТ ЧАТ!
         });
     });
 }
