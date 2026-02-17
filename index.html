@@ -1,133 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NftX</title>
-<link rel="stylesheet" href="style.css">
-
-<!-- Здесь добавляем Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<!-- Конец Firebase SDKs -->
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyAI - Нейросети</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <section class="chat">
-        <h2>AI Chat</h2>
-        <div id="messages"></div>
-        <input id="question" placeholder="Напиши вопрос...">
-        <button id="ask">Отправить</button>
-      </section>
-      
-<header class="header">
-  <div class="logo">NftX</div>
-  <nav>
-    <a href="#">Home</a>
-    <a href="#">Feature</a>
-    <a href="#">Who to work</a>
-    <a href="#">Pricing</a>
-    <a href="#">Reviews</a>
-  </nav>
-  <button class="btn">Start free 14 trial</button>
-</header>
+    <!-- Хедер -->
+    <header class="header">
+        <div class="logo">StudyAI</div>
+        <nav class="nav-menu">
+            <a href="#" class="nav-link active">Нейросети</a>
+            <a href="#" class="nav-link">Магазин</a>
+            <a href="#" class="nav-link">Тарифы</a>
+            <a href="#" class="nav-link">Поддержка</a>
+        </nav>
+        <div class="user-menu" id="userMenu">
+            <button class="btn-outline" id="loginBtn">Войти</button>
+            <button class="btn-primary" id="registerBtn">Регистрация</button>
+        </div>
+    </header>
 
-<section class="hero">
-  <h1>One Dashboard to Manage all Your businesses</h1>
-  <p>Using basic skills you can improve your business stuff with Around</p>
-  <div class="hero-input">
-    <input type="email" placeholder="Input your mail...">
-    <button>Try for Free</button>
-  </div>
-</section>
+    <main class="container">
+        <!-- Заголовок страницы -->
+        <div class="page-header">
+            <h1>Нейросети</h1>
+            <p class="page-description">
+                Здесь собраны все нейросети из нашей коллекции. 
+                Напишите, какую задачу нужно решить и умный поиск подберёт самую подходящую нейронку.
+            </p>
+        </div>
 
-<section class="features">
-  <h2>How Does It Work?</h2>
-  <div class="grid-4">
-    <div class="card">Target your audience effectively</div>
-    <div class="card">Build dashboard in minutes</div>
-    <div class="card">Easily download your data</div>
-    <div class="card">Access from all devices</div>
-  </div>
-</section>
+        <!-- Поиск -->
+        <div class="search-section">
+            <input type="text" class="search-input" id="searchInput" placeholder="Поиск нейросети...">
+        </div>
 
-<section class="stats">
-  <div class="stat">8.52k<br><small>Analytics</small></div>
-  <div class="stat">83%<br><small>Conversion</small></div>
-  <div class="stat">$8.52k<br><small>Earning</small></div>
-  <div class="stat">+24.5%<br><small>Growth</small></div>
-</section>
-
-<section class="pricing">
-  <h2>Pricing</h2>
-  <div class="grid-3">
-    <div class="price-card">
-      <h3>Starter</h3>
-      <h1>$15</h1>
-      <p>Per month</p>
-      <button>Get Start</button>
+        <!-- Категории -->
+        <!-- Категории -->
+<div class="categories-section">
+    <h3 class="section-title">Категории</h3>
+    <div class="categories-grid" id="categoriesGrid">
+        <span class="category-chip active">Все</span>
+        <span class="category-chip">Популярные</span>
+        <span class="category-chip">Творчество</span>
+        <span class="category-chip">Прямые нейросети</span>
+        <span class="category-chip">Учеба и работа</span>
     </div>
-    <div class="price-card active">
-      <h3>Business</h3>
-      <h1>$75</h1>
-      <p>Per month</p>
-      <button>Get Start</button>
-    </div>
-    <div class="price-card">
-      <h3>Premium</h3>
-      <h1>$150</h1>
-      <p>Per month</p>
-      <button>Get Start</button>
-    </div>
-  </div>
-</section>
+</div>
 
-<section class="testimonial">
-  <h2>Testimonial</h2>
-  <p class="quote">“The best flows on the planet, at your fingertips.”</p>
-  <strong>Leslie Alexander</strong><br>
-  <small>CEO, Digital PT</small>
-</section>
+        <!-- Популярные нейросети -->
+        <section class="neural-section">
+            <div class="section-header">
+                <h2>Популярные</h2>
+                <a href="#" class="view-all">Все популярные →</a>
+            </div>
+            <div class="cards-grid" id="cardsGrid">
+                <!-- Карточки будут загружаться через JavaScript -->
+            </div>
+        </section>
+    </main>
 
-<footer class="footer">
-  <div>
-    <h3>NftX</h3>
-    <p>All rights reserved © 2022</p>
-  </div>
-  <div>
-    <h4>Explore</h4>
-    <p>Feature</p>
-    <p>Who to work</p>
-    <p>Pricing</p>
-    <p>Reviews</p>
-  </div>
-  <div>
-    <h4>Legal</h4>
-    <p>Privacy policy</p>
-    <p>Terms of service</p>
-  </div>
-</footer>
-<div id="loginModal" class="modal hidden">
-    <div class="modal-box">
-      <h2>Войдите, чтобы продолжить</h2>
-  
-      <button class="auth yandex">Войти с Яндекс</button>
-      <button class="auth telegram">Войти через Telegram</button>
-      <button class="auth vk">Войти с VK</button>
-  
-      <div class="or">или</div>
-  
-      <input id="email" type="email" placeholder="Email">
-      <input id="password" type="password" placeholder="Пароль">
-      <button class="auth email">Войти</button>
-  
-      <p class="policy">
-        Продолжая, вы принимаете условия
-      </p>
-  
-      <span id="closeModal">✕</span>
+    <!-- Модальное окно входа -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">✕</button>
+            <h2 id="modalTitle">Добро пожаловать!</h2>
+            <p class="modal-subtitle" id="modalSubtitle">Войдите в StudyAI чтобы продолжить</p>
+            
+            <input type="email" class="modal-input" id="email" placeholder="Email">
+            <input type="password" class="modal-input" id="password" placeholder="Пароль">
+            <button class="modal-btn" id="modalActionBtn">Войти</button>
+            
+            <div class="social-buttons">
+                <button class="social-btn" data-social="telegram">📱 Telegram</button>
+                <button class="social-btn" data-social="vk">🔵 VK ID</button>
+                <button class="social-btn" data-social="yandex">⭐ Яндекс</button>
+                <button class="social-btn" data-social="google">📧 Google</button>
+            </div>
+            
+            <p class="policy-text">
+                Продолжая, вы принимаете условия использования и политику конфиденциальности
+            </p>
+        </div>
     </div>
-  </div>  
-  <script src="script.js"></script>
+
+    <script src="script.js"></script>
 </body>
 </html>
