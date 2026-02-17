@@ -328,10 +328,13 @@ function renderBots(botsToRender = botsData) {
         
         card.innerHTML = `
             ${bot.badge ? `<span class="card-badge">${bot.badge}</span>` : ''}
-            <div class="card-icon">
-                <img src="${getIconPath(bot.id)}" 
-                     alt="${bot.name}" 
-                     class="bot-icon-image">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                <div class="card-icon">
+                    <img src="${getIconPath(bot.id)}" 
+                         alt="${bot.name}" 
+                         class="bot-icon-image">
+                </div>
+                <span class="card-token-price-top">⚡ ${bot.tokenPrice}</span>
             </div>
             <h3 class="card-title">${bot.name}</h3>
             <p class="card-description">${bot.description}</p>
@@ -339,7 +342,6 @@ function renderBots(botsToRender = botsData) {
                 ${bot.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
             </div>
             <div class="card-stats-container">
-                <span class="card-token-price">⚡ ${bot.tokenPrice} токенов</span>
                 <div class="card-stats">
                     <span class="stat"><span class="stat-star">★</span> ${bot.rating}</span>
                     <span class="stat">👤 ${bot.users}</span>
@@ -358,7 +360,113 @@ function renderBots(botsToRender = botsData) {
     
     attachBotEventHandlers();
 }
+// ==================== НАВИГАЦИЯ ====================
+const shopModal = document.getElementById('shopModal');
+const pricingModal = document.getElementById('pricingModal');
+const supportModal = document.getElementById('supportModal');
 
+// Открытие модалок по клику на навигацию
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        // Убираем активный класс у всех
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        
+        // Добавляем активный класс текущей ссылке
+        link.classList.add('active');
+        
+        const text = link.textContent.toLowerCase();
+        
+        if (text.includes('магазин')) {
+            shopModal.classList.remove('hidden');
+        } else if (text.includes('тарифы')) {
+            pricingModal.classList.remove('hidden');
+        } else if (text.includes('поддержка')) {
+            supportModal.classList.remove('hidden');
+        } else if (text.includes('нейросети')) {
+            // Главная страница - просто закрываем все модалки
+            shopModal.classList.add('hidden');
+            pricingModal.classList.add('hidden');
+            supportModal.classList.add('hidden');
+        }
+    });
+});
+
+// Закрытие модалок
+document.getElementById('closeShop').addEventListener('click', () => {
+    shopModal.classList.add('hidden');
+});
+
+document.getElementById('closePricing').addEventListener('click', () => {
+    pricingModal.classList.add('hidden');
+});
+
+document.getElementById('closeSupport').addEventListener('click', () => {
+    supportModal.classList.add('hidden');
+});
+
+// Покупка токенов
+document.querySelectorAll('.buy-package-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        if (!currentUser) {
+            showNotification('Войдите в систему', 'warning');
+            loginModal.classList.remove('hidden');
+            return;
+        }
+        
+        const tokens = btn.dataset.tokens;
+        const price = btn.dataset.price;
+        
+        // Вызываем функцию покупки токенов
+        await buyBotTokens('tokens', parseInt(tokens));
+    });
+});
+
+// Подписка на тарифы
+document.querySelectorAll('.subscribe-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        if (!currentUser) {
+            showNotification('Войдите в систему', 'warning');
+            loginModal.classList.remove('hidden');
+            return;
+        }
+        
+        const plan = btn.dataset.plan;
+        await buySubscription(plan);
+    });
+});
+
+// Отправка сообщения в поддержку
+document.getElementById('sendSupportMessage')?.addEventListener('click', () => {
+    if (!currentUser) {
+        showNotification('Войдите в систему', 'warning');
+        loginModal.classList.remove('hidden');
+        return;
+    }
+    
+    const name = document.getElementById('supportName')?.value;
+    const email = document.getElementById('supportEmail')?.value;
+    const message = document.getElementById('supportMessage')?.value;
+    
+    if (!message) {
+        showNotification('Введите сообщение', 'error');
+        return;
+    }
+    
+    // Здесь можно добавить отправку в Telegram/Email
+    showNotification('Сообщение отправлено! Мы ответим в ближайшее время', 'success');
+    
+    // Очищаем форму
+    document.getElementById('supportName').value = '';
+    document.getElementById('supportEmail').value = '';
+    document.getElementById('supportMessage').value = '';
+});
+
+// FAQ кнопка
+document.getElementById('openFaq')?.addEventListener('click', () => {
+    showNotification('FAQ будет доступен позже', 'info');
+});
 // ==================== ПЛАТЕЖИ ====================
 async function buySubscription(priceType) {
     if (!currentUser) {
@@ -920,7 +1028,30 @@ function openProfile() {
         });
     });
 }
+// ==================== ПЕРЕКЛЮЧЕНИЕ ТЕМЫ ====================
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.querySelector('.theme-icon');
 
+// Проверяем сохраненную тему
+const savedTheme = localStorage.getItem('theme') || 'dark';
+if (savedTheme === 'light') {
+    document.body.classList.add('light-theme');
+    themeIcon.textContent = '☀️';
+} else {
+    themeIcon.textContent = '🌙';
+}
+
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light-theme');
+    
+    if (document.body.classList.contains('light-theme')) {
+        themeIcon.textContent = '☀️';
+        localStorage.setItem('theme', 'light');
+    } else {
+        themeIcon.textContent = '🌙';
+        localStorage.setItem('theme', 'dark');
+    }
+});
 // ==================== УВЕДОМЛЕНИЯ ====================
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
