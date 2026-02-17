@@ -2,13 +2,14 @@
 
 // ==================== ИНИЦИАЛИЗАЦИЯ FIREBASE ====================
 const firebaseConfig = {
-    apiKey: "AIzaSyBxXXXXXXXXXXXX", // ВАМ НУЖНО НАЙТИ API KEY!
-    authDomain: "emailpassword-2b4ee.firebaseapp.com", // ЭТО ПРАВИЛЬНО
-    projectId: "emailpassword-2b4ee", // ЭТО ПРАВИЛЬНО
-    storageBucket: "emailpassword-2b4ee.appspot.com", // ЭТО ПРАВИЛЬНО
-    messagingSenderId: "XXXXXXXXXXXX", // НУЖНО НАЙТИ
-    appId: "1:XXXXXXXXXXXX:web:XXXXXXXXXXXX" // НУЖНО НАЙТИ
+    apiKey: "AIzaSyASqc9Jo5ODXA2byMbxwiGpkaN3D8LjAgA",
+authDomain: "emailpassword-2b4ee.firebaseapp.com",
+projectId: "emailpassword-2b4ee",
+storageBucket: "emailpassword-2b4ee.firebasestorage.app",
+messagingSenderId: "709991576503",
+appId: "1:709991576503:web:4eb22f1d2ab40aee9fae32",
 };
+
 
 // Инициализация Firebase
 firebase.initializeApp(firebaseConfig);
