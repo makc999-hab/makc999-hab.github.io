@@ -3,13 +3,12 @@
 // ==================== ИНИЦИАЛИЗАЦИЯ FIREBASE ====================
 const firebaseConfig = {
     apiKey: "AIzaSyASqc9Jo5ODXA2byMbxwiGpkaN3D8LjAgA",
-authDomain: "emailpassword-2b4ee.firebaseapp.com",
-projectId: "emailpassword-2b4ee",
-storageBucket: "emailpassword-2b4ee.firebasestorage.app",
-messagingSenderId: "709991576503",
-appId: "1:709991576503:web:4eb22f1d2ab40aee9fae32",
+    authDomain: "emailpassword-2b4ee.firebaseapp.com",
+    projectId: "emailpassword-2b4ee",
+    storageBucket: "emailpassword-2b4ee.firebasestorage.app",
+    messagingSenderId: "709991576503",
+    appId: "1:709991576503:web:4eb22f1d2ab40aee9fae32",
 };
-
 
 // Инициализация Firebase
 firebase.initializeApp(firebaseConfig);
@@ -287,6 +286,35 @@ const botsData = [
     }
 ];
 
+// ==================== ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ПУТИ К ИКОНКЕ ====================
+function getIconPath(botId) {
+    switch(botId) {
+        case 'chatgpt52': return 'images/chatgpt.webp';
+        case 'nano-banana': return 'images/nanobananapro.png';
+        case 'video-generator': return 'images/generatorvidio.webp';
+        case 'presentation-pro': return 'images/generatoppresent.png';
+        case 'image-generator': return 'images/generatorimg.webp';
+        case 'suno': return 'images/suno.webp';
+        case 'sora2': return 'images/sora2.webp';
+        case 'image-animation': return 'images/ojivimg.webp';
+        case 'google-veo': return 'images/googleveo.webp';
+        case 'midjourney': return 'images/midjorney.webp';
+        case 'kling-turbo': return 'images/king.webp';
+        case 'feb-photo': return 'images/potosesii.png';
+        case 'feb-song': return 'images/songfefral.webp';
+        case 'love-card': return 'images/loveis.webp';
+        case 'eleven-labs': return 'images/elevenlabs.webp';
+        case 'gemini-pro': return 'images/gemini3pro.webp';
+        case 'chatgpt51': return 'images/chatgpt.webp';
+        case 'chatgpt5': return 'images/chatgpt.webp';
+        case 'kling26': return 'images/king26.webp';
+        case 'presentation-generator': return 'images/generatoppresent.png';
+        case 'claude': return 'images/claude.webp';
+        case 'perplexity': return 'images/perplexity.webp';
+        default: return 'images/chatgpt.webp';
+    }
+}
+
 // ==================== ОТОБРАЖЕНИЕ КАРТОЧЕК ====================
 function renderBots(botsToRender = botsData) {
     cardsGrid.innerHTML = '';
@@ -298,53 +326,40 @@ function renderBots(botsToRender = botsData) {
         card.dataset.botId = bot.id;
         card.dataset.category = bot.category;
         
-        // Проверяем расширение файла (png или webp)
-        const imageExtensions = ['png', 'webp'];
-        let imagePath = '';
-        
-        // Определяем правильный путь к изображению
-        if (bot.id === 'nano-banana' || bot.id === 'feb-photo' || bot.id === 'presentation-pro') {
-            imagePath = `images/${bot.id}.png`;
-        } else {
-            imagePath = `images/${bot.id}.webp`;
-        }
-        
         card.innerHTML = `
-    ${bot.badge ? `<span class="card-badge">${bot.badge}</span>` : ''}
-    <div class="card-icon">
-        <img src="${imagePath}" 
-             alt="${bot.name}" 
-             class="bot-icon-image"
-             onerror="this.style.display='none'; this.parentElement.innerHTML='${bot.icon}';">
-    </div>
-    <h3 class="card-title">${bot.name}</h3>
-    <p class="card-description">${bot.description}</p>
-    <div class="card-tags">
-        ${bot.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-    </div>
-    <div class="card-stats-container">
-    <span class="card-token-price">⚡ ${bot.tokenPrice} токенов</span>
-    <div class="card-stats">
-        <span class="stat"><span class="stat-star">★</span> ${bot.rating}</span>
-        <span class="stat">👤 ${bot.users}</span>
-    </div>
-</div>
-    <div class="card-footer">
-        <button class="favorite-btn ${isFavorite ? 'active' : ''}" data-bot="${bot.id}">
-            ${isFavorite ? '★' : '☆'}
-        </button>
-        <button class="use-btn" data-bot="${bot.id}">Использовать</button>
-    </div>
-`;
+            ${bot.badge ? `<span class="card-badge">${bot.badge}</span>` : ''}
+            <div class="card-icon">
+                <img src="${getIconPath(bot.id)}" 
+                     alt="${bot.name}" 
+                     class="bot-icon-image">
+            </div>
+            <h3 class="card-title">${bot.name}</h3>
+            <p class="card-description">${bot.description}</p>
+            <div class="card-tags">
+                ${bot.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+            </div>
+            <div class="card-stats-container">
+                <span class="card-token-price">⚡ ${bot.tokenPrice} токенов</span>
+                <div class="card-stats">
+                    <span class="stat"><span class="stat-star">★</span> ${bot.rating}</span>
+                    <span class="stat">👤 ${bot.users}</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="favorite-btn ${isFavorite ? 'active' : ''}" data-bot="${bot.id}">
+                    ${isFavorite ? '★' : '☆'}
+                </button>
+                <button class="use-btn" data-bot="${bot.id}">Использовать</button>
+            </div>
+        `;
         
         cardsGrid.appendChild(card);
     });
     
     attachBotEventHandlers();
 }
-// ==================== ПЛАТЕЖИ ====================
 
-// Функция для покупки подписки
+// ==================== ПЛАТЕЖИ ====================
 async function buySubscription(priceType) {
     if (!currentUser) {
         showNotification('Войдите в систему', 'warning');
@@ -370,7 +385,7 @@ async function buySubscription(priceType) {
         const data = await response.json();
         
         if (data.url) {
-            window.location.href = data.url; // Перенаправление на Stripe
+            window.location.href = data.url;
         } else {
             showNotification('Ошибка при создании платежа', 'error');
         }
@@ -380,7 +395,6 @@ async function buySubscription(priceType) {
     }
 }
 
-// Функция для покупки токенов бота
 async function buyBotTokens(botKey, amount) {
     if (!currentUser) {
         showNotification('Войдите в систему', 'warning');
@@ -416,9 +430,9 @@ async function buyBotTokens(botKey, amount) {
         showNotification('Ошибка при оплате', 'error');
     }
 }
+
 // ==================== ОБРАБОТЧИКИ СОБЫТИЙ ====================
 function attachBotEventHandlers() {
-    // Кнопки избранного
     document.querySelectorAll('.favorite-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -427,7 +441,6 @@ function attachBotEventHandlers() {
         });
     });
     
-    // Кнопки использования
     document.querySelectorAll('.use-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             if (!currentUser) {
@@ -439,10 +452,7 @@ function attachBotEventHandlers() {
             const botId = btn.dataset.bot;
             const bot = botsData.find(b => b.id === botId);
             
-            // Добавляем в недавние
             addToRecentBots(bot);
-            
-            // Показываем уведомление
             showNotification(`Чат с ${bot.name} откроется после настройки API`, 'info');
         });
     });
@@ -543,23 +553,7 @@ modalActionBtn.addEventListener('click', async () => {
         emailInput.value = '';
         passwordInput.value = '';
     } catch (error) {
-        let errorMessage = 'Ошибка: ';
-        switch (error.code) {
-            case 'auth/user-not-found':
-                errorMessage += 'Пользователь не найден';
-                break;
-            case 'auth/wrong-password':
-                errorMessage += 'Неверный пароль';
-                break;
-            case 'auth/email-already-in-use':
-                errorMessage += 'Email уже используется';
-                break;
-            case 'auth/invalid-email':
-                errorMessage += 'Неверный формат email';
-                break;
-            default:
-                errorMessage += error.message;
-        }
+        let errorMessage = 'Ошибка: ' + error.message;
         showNotification(errorMessage, 'error');
     }
 });
@@ -578,7 +572,7 @@ document.querySelectorAll('.social-btn').forEach(btn => {
         }
         
         try {
-            const result = await auth.signInWithPopup(provider);
+            await auth.signInWithPopup(provider);
             showNotification('Успешный вход!', 'success');
             loginModal.classList.add('hidden');
         } catch (error) {
@@ -642,7 +636,6 @@ function toggleFavorite(botId) {
     
     localStorage.setItem('favorites', JSON.stringify(favorites));
     
-    // Обновляем кнопки
     document.querySelectorAll('.favorite-btn').forEach(btn => {
         if (btn.dataset.bot === botId) {
             btn.classList.toggle('active');
@@ -657,7 +650,6 @@ function addToRecentBots(bot) {
     recentBots.unshift({ 
         id: bot.id, 
         name: bot.name, 
-        icon: bot.icon, 
         timestamp: Date.now() 
     });
     recentBots = recentBots.slice(0, 10);
@@ -669,6 +661,19 @@ function openProfile() {
     const profileModal = document.createElement('div');
     profileModal.className = 'modal';
     profileModal.id = 'profileModal';
+    
+    const recentBotsHTML = recentBots.length > 0 
+        ? recentBots.map(bot => `
+            <div class="recent-bot-item" data-bot="${bot.id}">
+                <span class="recent-bot-icon">
+                    <img src="${getIconPath(bot.id)}" style="width: 32px; height: 32px; border-radius: 50%;">
+                </span>
+                <span class="recent-bot-name">${bot.name}</span>
+                <span class="recent-bot-time">${new Date(bot.timestamp).toLocaleTimeString()}</span>
+            </div>
+        `).join('') 
+        : '<p style="color: #71717A; text-align: center;">Нет недавних ботов</p>';
+    
     profileModal.innerHTML = `
         <div class="modal-content profile-modal">
             <button class="modal-close" id="closeProfile">✕</button>
@@ -697,13 +702,7 @@ function openProfile() {
             <div class="profile-section">
                 <h3>Недавние боты</h3>
                 <div class="recent-bots-list">
-                    ${recentBots.length > 0 ? recentBots.map(bot => `
-                        <div class="recent-bot-item" data-bot="${bot.id}">
-                            <span class="recent-bot-icon">${bot.icon}</span>
-                            <span class="recent-bot-name">${bot.name}</span>
-                            <span class="recent-bot-time">${new Date(bot.timestamp).toLocaleTimeString()}</span>
-                        </div>
-                    `).join('') : '<p style="color: #71717A; text-align: center;">Нет недавних ботов</p>'}
+                    ${recentBotsHTML}
                 </div>
             </div>
             
@@ -744,16 +743,16 @@ function showNotification(message, type = 'info') {
     `;
     
     document.body.appendChild(notification);
-    
     setTimeout(() => notification.classList.add('show'), 10);
     
-    const timeout = setTimeout(() => {
-        closeNotification(notification);
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
     }, 5000);
     
     notification.querySelector('.notification-close').addEventListener('click', () => {
-        clearTimeout(timeout);
-        closeNotification(notification);
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
     });
 }
 
@@ -764,11 +763,6 @@ function getNotificationIcon(type) {
         case 'warning': return '⚠️';
         default: return 'ℹ️';
     }
-}
-
-function closeNotification(notification) {
-    notification.classList.remove('show');
-    setTimeout(() => notification.remove(), 300);
 }
 
 // ==================== СООБЩЕНИЕ "НИЧЕГО НЕ НАЙДЕНО" ====================
