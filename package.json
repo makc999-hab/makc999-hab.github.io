@@ -1,8 +1,11 @@
 {
-  "name": "maxperepelitsa-store",
+  "name": "studyai",
   "version": "1.0.0",
-  "description": "StudyAI - Нейросети",
+  "description": "StudyAI - Платформа с нейросетями",
+  "type": "module",
   "dependencies": {
-      "stripe": "^14.0.0"
+    "yookassa-sdk": "^1.0.0",
+    "node-fetch": "^3.3.0",
+    "dotenv": "^16.0.0"
   }
 }
