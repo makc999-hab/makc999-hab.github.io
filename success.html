@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата успешна - StudyAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .success-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .success-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 60px 40px;
+            max-width: 500px;
+            text-align: center;
+        }
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+        }
+        .success-card h1 {
+            font-size: 32px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #10B981, #34D399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .success-card p {
+            color: #A0A0A8;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .success-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        .btn-success {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-card">
+            <div class="success-icon">✅</div>
+            <h1>Оплата прошла успешно!</h1>
+            <p>Спасибо за покупку. Токены будут начислены на ваш баланс в течение нескольких минут.</p>
+            <div class="success-buttons">
+                <a href="/" class="btn-success">На главную</a>
+                <a href="/profile.html" class="btn-outline">В профиль</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Уведомление об успехе
+        setTimeout(() => {
+            alert('✅ Токены успешно начислены!');
+        }, 1000);
+    </script>
+</body>
+</html>
