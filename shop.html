@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyAI - Магазин токенов</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .shop-header {
+            text-align: center;
+            padding: 60px 0 20px;
+        }
+        .shop-header h1 {
+            font-size: 48px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #7C3AED, #C084FC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .shop-header p {
+            color: #A0A0A8;
+            font-size: 18px;
+        }
+        .token-packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+        .token-package-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .token-package-card:hover {
+            transform: translateY(-5px);
+            border-color: #7C3AED;
+            background: rgba(124, 58, 237, 0.05);
+        }
+        .token-package-card.popular {
+            border: 2px solid #7C3AED;
+        }
+        .package-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: #7C3AED;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .package-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        .package-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .package-price {
+            font-size: 36px;
+            font-weight: 700;
+            color: #C084FC;
+            margin-bottom: 20px;
+        }
+        .package-price small {
+            font-size: 14px;
+            color: #A0A0A8;
+            font-weight: 400;
+        }
+        .package-description {
+            color: #A0A0A8;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        .buy-btn {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid #7C3AED;
+            color: white;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .buy-btn:hover {
+            background: #7C3AED;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #7C3AED;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .balance-info {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .balance-info span {
+            font-size: 18px;
+        }
+        .balance-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: #C084FC;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div style="display: flex; align-items: center;">
+            <div class="logo">StudyAI</div>
+            <div class="theme-toggle" id="themeToggle">
+                <span class="theme-icon">🌙</span>
+            </div>
+        </div>
+        <nav class="nav-menu">
+            <a href="/" class="nav-link">Нейросети</a>
+            <a href="/shop.html" class="nav-link active">Магазин</a>
+            <a href="/pricing.html" class="nav-link">Тарифы</a>
+            <a href="/support.html" class="nav-link">Поддержка</a>
+        </nav>
+        <div class="user-menu" id="userMenu">
+            <button class="btn-outline" id="loginBtn">Войти</button>
+            <button class="btn-primary" id="registerBtn">Регистрация</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <a href="/" class="back-link">← На главную</a>
+        
+        <div class="shop-header">
+            <h1>🛍️ Магазин токенов</h1>
+            <p>Пополните баланс и покупайте токены для нейросетей</p>
+        </div>
+        
+        <div class="balance-info" id="balanceInfo" style="display: none;">
+            <span>Ваш баланс:</span>
+            <span class="balance-amount" id="balanceAmount">⚡ 0</span>
+        </div>
+        
+        <div class="token-packages-grid">
+            <div class="token-package-card" data-tokens="100">
+                <div class="package-icon">⚡</div>
+                <div class="package-name">100 токенов</div>
+                <div class="package-price">5 ₽</div>
+                <div class="package-description">Для небольших задач</div>
+                <button class="buy-btn buy-package-btn" data-tokens="100">Купить</button>
+            </div>
+            
+            <div class="token-package-card popular" data-tokens="500">
+                <div class="package-badge">Популярное</div>
+                <div class="package-icon">⚡⚡</div>
+                <div class="package-name">500 токенов</div>
+                <div class="package-price">20 ₽</div>
+                <div class="package-description">Для активного использования</div>
+                <button class="buy-btn buy-package-btn" data-tokens="500">Купить</button>
+            </div>
+            
+            <div class="token-package-card" data-tokens="1000">
+                <div class="package-icon">⚡⚡⚡</div>
+                <div class="package-name">1000 токенов</div>
+                <div class="package-price">35 ₽</div>
+                <div class="package-description">Для профессионалов</div>
+                <button class="buy-btn buy-package-btn" data-tokens="1000">Купить</button>
+            </div>
+            
+            <div class="token-package-card" data-tokens="5000">
+                <div class="package-icon">⚡⚡⚡⚡</div>
+                <div class="package-name">5000 токенов</div>
+                <div class="package-price">150 ₽</div>
+                <div class="package-description">Для команд и бизнеса</div>
+                <button class="buy-btn buy-package-btn" data-tokens="5000">Купить</button>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 40px 0; padding: 30px; background: rgba(255, 255, 255, 0.02); border-radius: 24px;">
+            <h3 style="margin-bottom: 16px;">Способы оплаты</h3>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <span style="padding: 8px 16px; background: rgba(255, 255, 255, 0.05); border-radius: 100px;">💳 Карты Мир</span>
+                <span style="padding: 8px 16px; background: rgba(255, 255, 255, 0.05); border-radius: 100px;">💳 Visa/Mastercard</span>
+                <span style="padding: 8px 16px; background: rgba(255, 255, 255, 0.05); border-radius: 100px;">📱 СБП</span>
+                <span style="padding: 8px 16px; background: rgba(255, 255, 255, 0.05); border-radius: 100px;">🏦 T-Pay</span>
+                <span style="padding: 8px 16px; background: rgba(255, 255, 255, 0.05); border-radius: 100px;">💙 SberPay</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Модальное окно входа -->
+    <div id="loginModal" class="modal hidden">
+        <!-- ... тот же контент ... -->
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Показываем баланс если пользователь авторизован
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                const balanceInfo = document.getElementById('balanceInfo');
+                const balanceAmount = document.getElementById('balanceAmount');
+                const userTokens = JSON.parse(localStorage.getItem('userTokens')) || { balance: 0 };
+                balanceInfo.style.display = 'flex';
+                balanceAmount.textContent = `⚡ ${userTokens.balance}`;
+            }
+        });
+    </script>
+</body>
+</html>
