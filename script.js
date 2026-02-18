@@ -32,6 +32,10 @@ let currentUser = null;
 let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 let recentBots = JSON.parse(localStorage.getItem('recentBots')) || [];
 let isLoginMode = true;
+let userTokens = JSON.parse(localStorage.getItem('userTokens')) || {
+    balance: 0,
+    purchases: []
+};
 
 // ==================== КОНФИГУРАЦИЯ БОТОВ ====================
 const botsData = [
@@ -317,6 +321,8 @@ function getIconPath(botId) {
 
 // ==================== ОТОБРАЖЕНИЕ КАРТОЧЕК ====================
 function renderBots(botsToRender = botsData) {
+    if (!cardsGrid) return;
+    
     cardsGrid.innerHTML = '';
     
     botsToRender.forEach(bot => {
@@ -362,13 +368,14 @@ function renderBots(botsToRender = botsData) {
 }
 
 // ==================== НАВИГАЦИЯ ====================
-const shopModal = document.getElementById('shopModal');
-const pricingModal = document.getElementById('pricingModal');
-const supportModal = document.getElementById('supportModal');
-
-// Открытие модалок по клику на навигацию
+// Обновленная навигация для отдельных страниц
 document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        // Не предотвращаем переход, если это ссылка на другую страницу
+        if (href && href !== '#') {
+            return; // Позволяем обычную навигацию
+        }
         e.preventDefault();
         
         // Убираем активный класс у всех
@@ -380,93 +387,15 @@ document.querySelectorAll('.nav-link').forEach(link => {
         const text = link.textContent.toLowerCase();
         
         if (text.includes('магазин')) {
-            shopModal.classList.remove('hidden');
+            window.location.href = '/shop.html';
         } else if (text.includes('тарифы')) {
-            pricingModal.classList.remove('hidden');
+            window.location.href = '/pricing.html';
         } else if (text.includes('поддержка')) {
-            supportModal.classList.remove('hidden');
+            window.location.href = '/support.html';
         } else if (text.includes('нейросети')) {
-            // Главная страница - просто закрываем все модалки
-            shopModal.classList.add('hidden');
-            pricingModal.classList.add('hidden');
-            supportModal.classList.add('hidden');
+            window.location.href = '/';
         }
     });
-});
-
-// Закрытие модалок
-document.getElementById('closeShop').addEventListener('click', () => {
-    shopModal.classList.add('hidden');
-});
-
-document.getElementById('closePricing').addEventListener('click', () => {
-    pricingModal.classList.add('hidden');
-});
-
-document.getElementById('closeSupport').addEventListener('click', () => {
-    supportModal.classList.add('hidden');
-});
-
-// Покупка токенов
-document.querySelectorAll('.buy-package-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
-        if (!currentUser) {
-            showNotification('Войдите в систему', 'warning');
-            loginModal.classList.remove('hidden');
-            return;
-        }
-        
-        const tokens = btn.dataset.tokens;
-        const price = btn.dataset.price;
-        
-        // Вызываем функцию покупки токенов
-        await buyBotTokens('tokens', parseInt(tokens));
-    });
-});
-
-// Подписка на тарифы
-document.querySelectorAll('.subscribe-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
-        if (!currentUser) {
-            showNotification('Войдите в систему', 'warning');
-            loginModal.classList.remove('hidden');
-            return;
-        }
-        
-        const plan = btn.dataset.plan;
-        await buySubscription(plan);
-    });
-});
-
-// Отправка сообщения в поддержку
-document.getElementById('sendSupportMessage')?.addEventListener('click', () => {
-    if (!currentUser) {
-        showNotification('Войдите в систему', 'warning');
-        loginModal.classList.remove('hidden');
-        return;
-    }
-    
-    const name = document.getElementById('supportName')?.value;
-    const email = document.getElementById('supportEmail')?.value;
-    const message = document.getElementById('supportMessage')?.value;
-    
-    if (!message) {
-        showNotification('Введите сообщение', 'error');
-        return;
-    }
-    
-    // Здесь можно добавить отправку в Telegram/Email
-    showNotification('Сообщение отправлено! Мы ответим в ближайшее время', 'success');
-    
-    // Очищаем форму
-    document.getElementById('supportName').value = '';
-    document.getElementById('supportEmail').value = '';
-    document.getElementById('supportMessage').value = '';
-});
-
-// FAQ кнопка
-document.getElementById('openFaq')?.addEventListener('click', () => {
-    showNotification('FAQ будет доступен позже', 'info');
 });
 
 // ==================== ПОКУПКА ПОДПИСКИ ====================
@@ -527,6 +456,7 @@ async function buySubscription(priceType) {
         showNotification('Ошибка при оплате: ' + error.message, 'error');
     }
 }
+
 // ==================== ПОКУПКА ТОКЕНОВ ====================
 async function buyTokens(tokenAmount) {
     if (!currentUser) {
@@ -583,6 +513,15 @@ async function buyTokens(tokenAmount) {
         showNotification('Ошибка при оплате: ' + error.message, 'error');
     }
 }
+
+// ==================== ФУНКЦИЯ ОБНОВЛЕНИЯ ОТОБРАЖЕНИЯ ТОКЕНОВ ====================
+function updateTokenDisplay() {
+    const tokenDisplay = document.querySelector('.user-tokens');
+    if (tokenDisplay) {
+        tokenDisplay.textContent = `⚡ ${userTokens.balance}`;
+    }
+}
+
 // ==================== ОБРАБОТЧИКИ СОБЫТИЙ ====================
 function attachBotEventHandlers() {
     document.querySelectorAll('.favorite-btn').forEach(btn => {
@@ -626,6 +565,7 @@ function updateUIForLoggedInUser(user) {
     userMenu.innerHTML = `
         <div class="user-profile">
             <span class="user-email">${user.email}</span>
+            <span class="user-tokens" style="color: #C084FC; font-weight: 600;">⚡ ${userTokens.balance}</span>
             <button class="btn-outline" id="profileBtn">Профиль</button>
             <button class="btn-outline" id="logoutBtn">Выйти</button>
         </div>
@@ -647,6 +587,8 @@ function updateUIForLoggedOutUser() {
 
 function logout() {
     auth.signOut().then(() => {
+        userTokens = { balance: 0, purchases: [] };
+        localStorage.setItem('userTokens', JSON.stringify(userTokens));
         showNotification('Вы успешно вышли из системы', 'success');
     }).catch(error => {
         showNotification('Ошибка при выходе: ' + error.message, 'error');
@@ -669,9 +611,11 @@ function openLoginModal(isLogin = true) {
     }
 }
 
-closeModal.addEventListener('click', () => {
-    loginModal.classList.add('hidden');
-});
+if (closeModal) {
+    closeModal.addEventListener('click', () => {
+        loginModal.classList.add('hidden');
+    });
+}
 
 window.addEventListener('click', (e) => {
     if (e.target === loginModal) {
@@ -680,37 +624,39 @@ window.addEventListener('click', (e) => {
 });
 
 // ==================== АУТЕНТИФИКАЦИЯ ====================
-modalActionBtn.addEventListener('click', async () => {
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
-    
-    if (!email || !password) {
-        showNotification('Введите email и пароль', 'error');
-        return;
-    }
-    
-    if (password.length < 6) {
-        showNotification('Пароль должен быть не менее 6 символов', 'error');
-        return;
-    }
-    
-    try {
-        if (isLoginMode) {
-            await auth.signInWithEmailAndPassword(email, password);
-            showNotification('Успешный вход!', 'success');
-        } else {
-            await auth.createUserWithEmailAndPassword(email, password);
-            showNotification('Регистрация успешна!', 'success');
+if (modalActionBtn) {
+    modalActionBtn.addEventListener('click', async () => {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+        
+        if (!email || !password) {
+            showNotification('Введите email и пароль', 'error');
+            return;
         }
         
-        loginModal.classList.add('hidden');
-        emailInput.value = '';
-        passwordInput.value = '';
-    } catch (error) {
-        let errorMessage = 'Ошибка: ' + error.message;
-        showNotification(errorMessage, 'error');
-    }
-});
+        if (password.length < 6) {
+            showNotification('Пароль должен быть не менее 6 символов', 'error');
+            return;
+        }
+        
+        try {
+            if (isLoginMode) {
+                await auth.signInWithEmailAndPassword(email, password);
+                showNotification('Успешный вход!', 'success');
+            } else {
+                await auth.createUserWithEmailAndPassword(email, password);
+                showNotification('Регистрация успешна!', 'success');
+            }
+            
+            loginModal.classList.add('hidden');
+            emailInput.value = '';
+            passwordInput.value = '';
+        } catch (error) {
+            let errorMessage = 'Ошибка: ' + error.message;
+            showNotification(errorMessage, 'error');
+        }
+    });
+}
 
 // Социальная аутентификация
 document.querySelectorAll('.social-btn').forEach(btn => {
@@ -736,21 +682,23 @@ document.querySelectorAll('.social-btn').forEach(btn => {
 });
 
 // ==================== ПОИСК И ФИЛЬТРАЦИЯ ====================
-searchInput.addEventListener('input', (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    
-    const filteredBots = botsData.filter(bot => {
-        return bot.name.toLowerCase().includes(searchTerm) ||
-               bot.description.toLowerCase().includes(searchTerm) ||
-               bot.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        
+        const filteredBots = botsData.filter(bot => {
+            return bot.name.toLowerCase().includes(searchTerm) ||
+                   bot.description.toLowerCase().includes(searchTerm) ||
+                   bot.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+        });
+        
+        renderBots(filteredBots);
+        
+        if (filteredBots.length === 0) {
+            showNoResultsMessage();
+        }
     });
-    
-    renderBots(filteredBots);
-    
-    if (filteredBots.length === 0) {
-        showNoResultsMessage();
-    }
-});
+}
 
 categoryChips.forEach(chip => {
     chip.addEventListener('click', () => {
@@ -811,9 +759,17 @@ function addToRecentBots(bot) {
 }
 
 // ==================== ЧАТ С БОТОМ ====================
-
-// Функция для открытия чата
 function openBotChat(bot) {
+    // Проверяем достаточно ли токенов
+    if (userTokens.balance < bot.tokenPrice) {
+        showNotification(`Недостаточно токенов. Нужно ${bot.tokenPrice} ⚡`, 'warning');
+        const continueToChat = confirm('У вас недостаточно токенов. Хотите купить токены?');
+        if (continueToChat) {
+            window.location.href = '/shop.html';
+        }
+        return;
+    }
+
     // Создаем модальное окно чата
     const chatModal = document.createElement('div');
     chatModal.className = 'modal chat-modal';
@@ -849,7 +805,7 @@ function openBotChat(bot) {
                 </div>
                 <div class="chat-tools">
                     <button class="chat-tool" id="clearChat">🗑️ Очистить</button>
-                    <button class="chat-tool" id="buyTokensBtn">⚡ Купить токены (${bot.tokenPrice} за запрос)</button>
+                    <span class="chat-tool" style="background: rgba(124, 58, 237, 0.2);">⚡ ${bot.tokenPrice} за сообщение</span>
                 </div>
             </div>
         </div>
@@ -864,7 +820,6 @@ function openBotChat(bot) {
     const chatMessages = document.getElementById('chatMessages');
     const closeBtn = document.getElementById('closeChat');
     const clearBtn = document.getElementById('clearChat');
-    const buyTokensBtn = document.getElementById('buyTokensBtn');
     
     // Автоматическое расширение textarea
     chatInput.addEventListener('input', function() {
@@ -877,6 +832,14 @@ function openBotChat(bot) {
         const message = chatInput.value.trim();
         if (!message) return;
         
+        // Проверяем токены перед отправкой
+        if (userTokens.balance < bot.tokenPrice) {
+            showNotification('Недостаточно токенов', 'warning');
+            chatModal.remove();
+            window.location.href = '/shop.html';
+            return;
+        }
+        
         // Добавляем сообщение пользователя
         addMessageToChat(chatMessages, message, 'user', bot);
         chatInput.value = '';
@@ -886,8 +849,8 @@ function openBotChat(bot) {
         const typingId = showTypingIndicator(chatMessages, bot);
         
         try {
-            // Вызываем API через Netlify Function
-            const response = await fetch('/.netlify/functions/functions/api/proxy/openai', {
+            // ИСПРАВЛЕНО: правильный путь к API
+            const response = await fetch('/.netlify/functions/api/proxy/openai', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -897,14 +860,26 @@ function openBotChat(bot) {
                 })
             });
             
+            if (!response.ok) {
+                throw new Error('API request failed');
+            }
+            
             const data = await response.json();
             
             // Убираем индикатор печати
             document.getElementById(typingId)?.remove();
             
+            // Списываем токены
+            userTokens.balance -= bot.tokenPrice;
+            localStorage.setItem('userTokens', JSON.stringify(userTokens));
+            updateTokenDisplay();
+            
             // Добавляем ответ
             if (data.choices && data.choices[0]) {
                 addMessageToChat(chatMessages, data.choices[0].message.content, 'bot', bot);
+            } else if (data.content && data.content[0]) {
+                // Для Anthropic/Claude
+                addMessageToChat(chatMessages, data.content[0].text, 'bot', bot);
             } else {
                 addMessageToChat(chatMessages, 'Извините, произошла ошибка. Попробуйте позже.', 'bot', bot);
             }
@@ -938,10 +913,6 @@ function openBotChat(bot) {
                 </div>
             </div>
         `;
-    });
-    
-    buyTokensBtn.addEventListener('click', () => {
-        buyBotTokens(bot.id, 100);
     });
     
     chatInput.focus();
@@ -1021,15 +992,19 @@ function openProfile() {
             <h2>Профиль пользователя</h2>
             <div class="profile-info">
                 <div class="profile-avatar">
-                    ${currentUser.email[0].toUpperCase()}
+                    ${currentUser ? currentUser.email[0].toUpperCase() : '?'}
                 </div>
                 <div class="profile-details">
-                    <p><strong>Email:</strong> ${currentUser.email}</p>
-                    <p><strong>ID:</strong> ${currentUser.uid.slice(0, 8)}...</p>
+                    <p><strong>Email:</strong> ${currentUser ? currentUser.email : 'Неизвестно'}</p>
+                    <p><strong>ID:</strong> ${currentUser ? currentUser.uid.slice(0, 8) + '...' : 'Неизвестно'}</p>
                 </div>
             </div>
             
             <div class="profile-stats">
+                <div class="stat-card">
+                    <span class="stat-value">⚡ ${userTokens.balance}</span>
+                    <span class="stat-label">Токенов</span>
+                </div>
                 <div class="stat-card">
                     <span class="stat-value">${favorites.length}</span>
                     <span class="stat-label">В избранном</span>
@@ -1047,7 +1022,10 @@ function openProfile() {
                 </div>
             </div>
             
-            <button class="btn-primary" id="logoutFromProfile" style="width: 100%;">Выйти</button>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-primary" id="goToShop" style="flex: 1;">🛒 Купить токены</button>
+                <button class="btn-outline" id="logoutFromProfile" style="flex: 1;">Выйти</button>
+            </div>
         </div>
     `;
     
@@ -1061,6 +1039,11 @@ function openProfile() {
     document.getElementById('logoutFromProfile').addEventListener('click', () => {
         logout();
         profileModal.remove();
+    });
+    
+    document.getElementById('goToShop').addEventListener('click', () => {
+        profileModal.remove();
+        window.location.href = '/shop.html';
     });
     
     document.querySelectorAll('.recent-bot-item').forEach(item => {
@@ -1077,26 +1060,28 @@ function openProfile() {
 const themeToggle = document.getElementById('themeToggle');
 const themeIcon = document.querySelector('.theme-icon');
 
-// Проверяем сохраненную тему
-const savedTheme = localStorage.getItem('theme') || 'dark';
-if (savedTheme === 'light') {
-    document.body.classList.add('light-theme');
-    themeIcon.textContent = '☀️';
-} else {
-    themeIcon.textContent = '🌙';
-}
-
-themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('light-theme');
-    
-    if (document.body.classList.contains('light-theme')) {
+if (themeToggle && themeIcon) {
+    // Проверяем сохраненную тему
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
         themeIcon.textContent = '☀️';
-        localStorage.setItem('theme', 'light');
     } else {
         themeIcon.textContent = '🌙';
-        localStorage.setItem('theme', 'dark');
     }
-});
+
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        
+        if (document.body.classList.contains('light-theme')) {
+            themeIcon.textContent = '☀️';
+            localStorage.setItem('theme', 'light');
+        } else {
+            themeIcon.textContent = '🌙';
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+}
 
 // ==================== УВЕДОМЛЕНИЯ ====================
 function showNotification(message, type = 'info') {
@@ -1136,7 +1121,7 @@ function getNotificationIcon(type) {
 // ==================== СООБЩЕНИЕ "НИЧЕГО НЕ НАЙДЕНО" ====================
 function showNoResultsMessage() {
     let noResults = document.getElementById('noResultsMessage');
-    if (!noResults) {
+    if (!noResults && cardsGrid) {
         noResults = document.createElement('div');
         noResults.id = 'noResultsMessage';
         noResults.className = 'no-results';
@@ -1151,7 +1136,73 @@ function showNoResultsMessage() {
     }
 }
 
+// ==================== ИНИЦИАЛИЗАЦИЯ КНОПОК НА РАЗНЫХ СТРАНИЦАХ ====================
+function initializePageButtons() {
+    // Кнопки подписки на странице тарифов
+    document.querySelectorAll('.subscribe-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const plan = btn.dataset.plan;
+            buySubscription(plan);
+        });
+    });
+    
+    // Кнопки покупки токенов на странице магазина
+    document.querySelectorAll('.buy-package-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tokens = btn.dataset.tokens;
+            buyTokens(parseInt(tokens));
+        });
+    });
+    
+    // Отправка сообщения в поддержку
+    const sendSupportBtn = document.getElementById('sendSupportMessage');
+    if (sendSupportBtn) {
+        sendSupportBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                showNotification('Войдите в систему', 'warning');
+                openLoginModal(true);
+                return;
+            }
+            
+            const name = document.getElementById('supportName')?.value;
+            const email = document.getElementById('supportEmail')?.value;
+            const message = document.getElementById('supportMessage')?.value;
+            
+            if (!message) {
+                showNotification('Введите сообщение', 'error');
+                return;
+            }
+            
+            showNotification('Сообщение отправлено! Мы ответим в ближайшее время', 'success');
+            
+            // Очищаем форму
+            if (document.getElementById('supportName')) document.getElementById('supportName').value = '';
+            if (document.getElementById('supportEmail')) document.getElementById('supportEmail').value = '';
+            if (document.getElementById('supportMessage')) document.getElementById('supportMessage').value = '';
+        });
+    }
+    
+    // FAQ кнопка
+    const faqBtn = document.getElementById('openFaq');
+    if (faqBtn) {
+        faqBtn.addEventListener('click', () => {
+            showNotification('FAQ будет доступен позже', 'info');
+        });
+    }
+}
+
 // ==================== ИНИЦИАЛИЗАЦИЯ ====================
 document.addEventListener('DOMContentLoaded', () => {
     renderBots();
+    initializePageButtons();
+    
+    // Показываем баланс если пользователь авторизован на страницах магазина/профиля
+    if (window.location.pathname === '/shop.html' || window.location.pathname === '/profile.html') {
+        const balanceInfo = document.getElementById('balanceInfo');
+        const balanceAmount = document.getElementById('balanceAmount');
+        if (balanceInfo && balanceAmount) {
+            balanceInfo.style.display = 'flex';
+            balanceAmount.textContent = `⚡ ${userTokens.balance}`;
+        }
+    }
 });
