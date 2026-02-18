@@ -469,7 +469,7 @@ document.getElementById('openFaq')?.addEventListener('click', () => {
     showNotification('FAQ будет доступен позже', 'info');
 });
 
-// ==================== ПЛАТЕЖИ ====================
+// ==================== ПОКУПКА ПОДПИСКИ ====================
 async function buySubscription(priceType) {
     if (!currentUser) {
         showNotification('Войдите в систему', 'warning');
@@ -480,32 +480,55 @@ async function buySubscription(priceType) {
     try {
         showNotification('Перенаправление на оплату...', 'info');
         
-        const response = await fetch('/.netlify/functions/functions', {
+        const response = await fetch('/.netlify/functions/api/create-subscription', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                action: 'createSubscription',
                 priceType: priceType,
                 customerEmail: currentUser.email
             })
         });
         
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Payment failed');
+        }
+        
         const data = await response.json();
         
         if (data.url) {
-            window.location.href = data.url;
+            // Если это тестовый режим, показываем сообщение
+            if (data.testMode) {
+                showNotification(data.message, 'info');
+                // Имитация успешной оплаты - начисляем токены
+                const tokenAmount = priceType === 'basic' ? 500 : 
+                                   priceType === 'pro' ? 3000 : 10000;
+                userTokens.balance += tokenAmount;
+                userTokens.purchases.push({
+                    amount: tokenAmount,
+                    date: new Date().toISOString(),
+                    type: 'subscription'
+                });
+                localStorage.setItem('userTokens', JSON.stringify(userTokens));
+                updateTokenDisplay();
+                setTimeout(() => {
+                    window.location.href = '/success.html';
+                }, 1500);
+            } else {
+                window.location.href = data.url;
+            }
         } else {
             showNotification('Ошибка при создании платежа', 'error');
         }
     } catch (error) {
         console.error('Payment error:', error);
-        showNotification('Ошибка при оплате', 'error');
+        showNotification('Ошибка при оплате: ' + error.message, 'error');
     }
 }
-
-async function buyBotTokens(botKey, amount) {
+// ==================== ПОКУПКА ТОКЕНОВ ====================
+async function buyTokens(tokenAmount) {
     if (!currentUser) {
         showNotification('Войдите в систему', 'warning');
         openLoginModal(true);
@@ -515,32 +538,51 @@ async function buyBotTokens(botKey, amount) {
     try {
         showNotification('Перенаправление на оплату...', 'info');
         
-        const response = await fetch('/.netlify/functions/functions', {
+        const response = await fetch('/.netlify/functions/api/buy-tokens', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                action: 'createBotPayment',
-                botKey: botKey,
-                amount: amount,
+                tokenAmount: tokenAmount,
                 customerEmail: currentUser.email
             })
         });
         
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Payment failed');
+        }
+        
         const data = await response.json();
         
         if (data.url) {
-            window.location.href = data.url;
+            // Если это тестовый режим, показываем сообщение
+            if (data.testMode) {
+                showNotification(data.message, 'info');
+                // Имитация успешной оплаты - начисляем токены
+                userTokens.balance += parseInt(tokenAmount);
+                userTokens.purchases.push({
+                    amount: parseInt(tokenAmount),
+                    date: new Date().toISOString(),
+                    type: 'purchase'
+                });
+                localStorage.setItem('userTokens', JSON.stringify(userTokens));
+                updateTokenDisplay();
+                setTimeout(() => {
+                    window.location.href = '/success.html';
+                }, 1500);
+            } else {
+                window.location.href = data.url;
+            }
         } else {
             showNotification('Ошибка при создании платежа', 'error');
         }
     } catch (error) {
         console.error('Payment error:', error);
-        showNotification('Ошибка при оплате', 'error');
+        showNotification('Ошибка при оплате: ' + error.message, 'error');
     }
 }
-
 // ==================== ОБРАБОТЧИКИ СОБЫТИЙ ====================
 function attachBotEventHandlers() {
     document.querySelectorAll('.favorite-btn').forEach(btn => {
