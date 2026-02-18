@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль - StudyAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .profile-avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #7C3AED;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 600;
+            color: white;
+        }
+        .profile-header h1 {
+            font-size: 32px;
+        }
+        .profile-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #7C3AED;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div style="display: flex; align-items: center;">
+            <div class="logo">StudyAI</div>
+            <div class="theme-toggle" id="themeToggle">
+                <span class="theme-icon">🌙</span>
+            </div>
+        </div>
+        <nav class="nav-menu">
+            <a href="/" class="nav-link">Нейросети</a>
+            <a href="/shop.html" class="nav-link">Магазин</a>
+            <a href="/pricing.html" class="nav-link">Тарифы</a>
+            <a href="/support.html" class="nav-link">Поддержка</a>
+        </nav>
+        <div class="user-menu" id="userMenu"></div>
+    </header>
+
+    <main class="profile-container">
+        <a href="/" class="back-link">← На главную</a>
+        
+        <div id="profileContent">
+            <!-- Контент будет загружен через JavaScript -->
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        firebase.auth().onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = '/';
+                return;
+            }
+            
+            const userTokens = JSON.parse(localStorage.getItem('userTokens')) || { balance: 0, purchases: [] };
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            const recentBots = JSON.parse(localStorage.getItem('recentBots')) || [];
+            
+            document.getElementById('profileContent').innerHTML = `
+                <div class="profile-header">
+                    <div class="profile-avatar-large">${user.email[0].toUpperCase()}</div>
+                    <div>
+                        <h1>Профиль пользователя</h1>
+                        <p style="color: #A0A0A8;">${user.email}</p>
+                    </div>
+                </div>
+                
+                <div class="profile-card">
+                    <h2 style="margin-bottom: 20px;">Статистика</h2>
+                    <div class="stats-grid">
+                        <div style="text-align: center;">
+                            <div style="font-size: 36px; font-weight: 700; color: #C084FC;">⚡ ${userTokens.balance}</div>
+                            <div style="color: #A0A0A8;">Токенов</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 36px; font-weight: 700; color: #C084FC;">${favorites.length}</div>
+                            <div style="color: #A0A0A8;">В избранном</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 36px; font-weight: 700; color: #C084FC;">${recentBots.length}</div>
+                            <div style="color: #A0A0A8;">Недавние</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="profile-card">
+                    <h2 style="margin-bottom: 20px;">История операций</h2>
+                    ${userTokens.purchases && userTokens.purchases.length > 0 ? 
+                        userTokens.purchases.map(p => `
+                            <div class="history-item">
+                                <span>➕ Пополнение на ${p.amount} токенов</span>
+                                <span style="color: #A0A0A8;">${new Date(p.date).toLocaleDateString()}</span>
+                            </div>
+                        `).join('') : 
+                        '<p style="color: #71717A; text-align: center;">История операций пуста</p>'
+                    }
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-primary" id="goToShop" style="flex: 1;">🛒 Купить токены</button>
+                    <button class="btn-outline" id="logoutBtn" style="flex: 1;">Выйти</button>
+                </div>
+            `;
+            
+            document.getElementById('goToShop').addEventListener('click', () => {
+                window.location.href = '/shop.html';
+            });
+            
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                firebase.auth().signOut().then(() => {
+                    window.location.href = '/';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
