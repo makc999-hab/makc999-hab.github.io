@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyAI - Тарифы</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .pricing-header {
+            text-align: center;
+            padding: 60px 0 20px;
+        }
+        .pricing-header h1 {
+            font-size: 48px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #7C3AED, #C084FC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .pricing-header p {
+            color: #A0A0A8;
+            font-size: 18px;
+        }
+        .pricing-page-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin: 40px 0 60px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #7C3AED;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .price-ruble {
+            font-size: 14px;
+            color: #A0A0A8;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div style="display: flex; align-items: center;">
+            <div class="logo">StudyAI</div>
+            <div class="theme-toggle" id="themeToggle">
+                <span class="theme-icon">🌙</span>
+            </div>
+        </div>
+        <nav class="nav-menu">
+            <a href="/" class="nav-link">Нейросети</a>
+            <a href="/shop.html" class="nav-link">Магазин</a>
+            <a href="/pricing.html" class="nav-link active">Тарифы</a>
+            <a href="/support.html" class="nav-link">Поддержка</a>
+        </nav>
+        <div class="user-menu" id="userMenu">
+            <button class="btn-outline" id="loginBtn">Войти</button>
+            <button class="btn-primary" id="registerBtn">Регистрация</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <a href="/" class="back-link">← На главную</a>
+        
+        <div class="pricing-header">
+            <h1>Тарифные планы</h1>
+            <p>Выберите подходящий план для ваших задач. Оплата в рублях по курсу ЦБ.</p>
+        </div>
+
+        <div class="pricing-page-grid">
+            <div class="pricing-card">
+                <h3>Базовый</h3>
+                <div class="price">15 ₽<span class="price-ruble">/мес</span></div>
+                <ul class="features">
+                    <li>✅ 500 токенов в месяц</li>
+                    <li>✅ Доступ к ChatGPT 5.2</li>
+                    <li>✅ Доступ к Midjourney</li>
+                    <li>✅ Поддержка по email</li>
+                    <li>❌ Доступ к видео-генераторам</li>
+                    <li>❌ Приоритетная поддержка</li>
+                </ul>
+                <button class="btn-primary subscribe-btn" style="width: 100%;" data-plan="basic">Выбрать</button>
+            </div>
+            
+            <div class="pricing-card popular">
+                <div class="popular-badge">🔥 Хит продаж</div>
+                <h3>PRO</h3>
+                <div class="price">75 ₽<span class="price-ruble">/мес</span></div>
+                <ul class="features">
+                    <li>✅ 3000 токенов в месяц</li>
+                    <li>✅ Доступ ко всем нейросетям</li>
+                    <li>✅ Генерация видео до 10 минут</li>
+                    <li>✅ Поддержка 24/7</li>
+                    <li>✅ Приоритетная обработка</li>
+                    <li>✅ API доступ</li>
+                </ul>
+                <button class="btn-primary subscribe-btn" style="width: 100%;" data-plan="pro">Выбрать</button>
+            </div>
+            
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <div class="price">150 ₽<span class="price-ruble">/мес</span></div>
+                <ul class="features">
+                    <li>✅ 10000 токенов в месяц</li>
+                    <li>✅ Неограниченный доступ</li>
+                    <li>✅ Генерация видео до 30 минут</li>
+                    <li>✅ Выделенный менеджер</li>
+                    <li>✅ Индивидуальные решения</li>
+                    <li>✅ SLA гарантии</li>
+                </ul>
+                <button class="btn-primary subscribe-btn" style="width: 100%;" data-plan="enterprise">Выбрать</button>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 40px 0; padding: 30px; background: rgba(124, 58, 237, 0.05); border-radius: 24px;">
+            <h3 style="margin-bottom: 16px;">Все цены указаны в российских рублях</h3>
+            <p style="color: #A0A0A8;">Оплата принимается картами Мир, Visa, Mastercard, а также через СБП</p>
+        </div>
+    </main>
+
+    <!-- Модальное окно входа -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">✕</button>
+            <h2 id="modalTitle">Добро пожаловать!</h2>
+            <p class="modal-subtitle" id="modalSubtitle">Войдите в StudyAI чтобы продолжить</p>
+            
+            <input type="email" class="modal-input" id="email" placeholder="Email">
+            <input type="password" class="modal-input" id="password" placeholder="Пароль">
+            <button class="modal-btn" id="modalActionBtn">Войти</button>
+            
+            <div class="social-buttons">
+                <button class="social-btn" data-social="telegram">📱 Telegram</button>
+                <button class="social-btn" data-social="vk">🔵 VK ID</button>
+                <button class="social-btn" data-social="yandex">⭐ Яндекс</button>
+                <button class="social-btn" data-social="google">📧 Google</button>
+            </div>
+            
+            <p class="policy-text">
+                Продолжая, вы принимаете условия использования и политику конфиденциальности
+            </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
